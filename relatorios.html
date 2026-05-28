@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vida em Forma - Ahgora | Relatórios</title>
+
+  <style>
+    :root{
+      --azul:#003AFB;
+      --azulClaro:#8ABFFF;
+      --cinza:#6b7280;
+      --borda:#dbe7ff;
+      --fundo:#f7faff;
+    }
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial, Helvetica, sans-serif;
+    }
+
+    body{
+      background:var(--fundo);
+      color:#111827;
+      display:flex;
+      min-height:100vh;
+    }
+
+    aside{
+      width:260px;
+      background:#ffffff;
+      border-right:1px solid var(--borda);
+      box-shadow:4px 0 18px rgba(0,58,251,0.08);
+      padding:22px;
+      position:fixed;
+      height:100vh;
+      left:0;
+      top:0;
+    }
+
+    .logo-menu{
+      background:linear-gradient(135deg,#003AFB,#0057ff);
+      color:white;
+      border-radius:18px;
+      padding:20px;
+      margin-bottom:28px;
+      text-align:center;
+    }
+
+    .logo-menu h1{
+      font-size:22px;
+      margin-bottom:6px;
+    }
+
+    .logo-menu p{
+      font-size:13px;
+      opacity:0.9;
+    }
+
+    .menu button{
+      width:100%;
+      padding:14px;
+      margin-bottom:12px;
+      border:none;
+      border-radius:12px;
+      background:#ffffff;
+      color:#1f2937;
+      font-weight:bold;
+      text-align:left;
+      cursor:pointer;
+      border:1px solid var(--borda);
+      transition:0.2s;
+    }
+
+    .menu button:hover,
+    .menu button.ativo{
+      background:var(--azul);
+      color:white;
+    }
+
+    main{
+      margin-left:260px;
+      width:calc(100% - 260px);
+      padding:26px;
+    }
+
+    .cabecalho{
+      background:linear-gradient(135deg,#003AFB,#0057ff);
+      color:white;
+      border-radius:24px;
+      padding:26px;
+      margin-bottom:24px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .cabecalho::before,
+    .cabecalho::after{
+      content:"";
+      position:absolute;
+      border-radius:50%;
+      border:2px solid rgba(138,191,255,0.22);
+    }
+
+    .cabecalho::before{
+      width:620px;
+      height:620px;
+      top:-480px;
+      left:-120px;
+    }
+
+    .cabecalho::after{
+      width:620px;
+      height:620px;
+      bottom:-500px;
+      right:-100px;
+    }
+
+    .cabecalho h2,
+    .cabecalho p{
+      position:relative;
+      z-index:2;
+    }
+
+    .cabecalho h2{
+      font-size:30px;
+      margin-bottom:8px;
+    }
+
+    .cabecalho p{
+      font-size:15px;
+      opacity:0.95;
+    }
+
+    .tela{
+      display:none;
+    }
+
+    .tela.ativa{
+      display:block;
+    }
+
+    .card{
+      background:white;
+      border-radius:18px;
+      padding:20px;
+      border:1px solid var(--borda);
+      box-shadow:0 8px 24px rgba(138,191,255,0.18);
+      margin-bottom:22px;
+    }
+
+    .filtros{
+      display:grid;
+      grid-template-columns:1fr 1fr auto;
+      gap:16px;
+      align-items:end;
+    }
+
+    .filtro-box label{
+      display:block;
+      font-weight:bold;
+      color:var(--azul);
+      margin-bottom:8px;
+    }
+
+    .multi-select{
+      position:relative;
+    }
+
+    .multi-btn{
+      width:100%;
+      background:#ffffff;
+      border:1px solid #cbd5e1;
+      border-radius:12px;
+      padding:13px;
+      text-align:left;
+      cursor:pointer;
+      color:#374151;
+    }
+
+    .multi-options{
+      display:none;
+      position:absolute;
+      top:52px;
+      left:0;
+      width:100%;
+      background:white;
+      border:1px solid var(--borda);
+      border-radius:12px;
+      box-shadow:0 8px 24px rgba(0,0,0,0.12);
+      padding:10px;
+      z-index:10;
+      max-height:220px;
+      overflow:auto;
+    }
+
+    .multi-options.aberto{
+      display:block;
+    }
+
+    .multi-options label{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      color:#374151;
+      font-weight:normal;
+      margin-bottom:8px;
+      cursor:pointer;
+    }
+
+    .multi-options input{
+      width:auto;
+    }
+
+    .btn-limpar{
+      padding:13px 18px;
+      border:none;
+      border-radius:12px;
+      background:var(--azul);
+      color:white;
+      font-weight:bold;
+      cursor:pointer;
+      height:46px;
+    }
+
+    .btn-limpar:hover{
+      background:#002fc7;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      overflow:hidden;
+      border-radius:14px;
+    }
+
+    thead{
+      background:var(--azul);
+      color:white;
+    }
+
+    th,td{
+      padding:13px;
+      border-bottom:1px solid #e5e7eb;
+      text-align:left;
+      font-size:14px;
+    }
+
+    tbody tr:hover{
+      background:#f8fbff;
+    }
+
+    .vazio{
+      text-align:center;
+      padding:30px;
+      color:#6b7280;
+      font-weight:bold;
+    }
+
+    .contador{
+      color:#6b7280;
+      margin-bottom:12px;
+      font-size:14px;
+    }
+
+    .placeholder{
+      text-align:center;
+      padding:60px 20px;
+      color:#6b7280;
+    }
+
+    .placeholder h3{
+      color:var(--azul);
+      font-size:26px;
+      margin-bottom:10px;
+    }
+
+    footer{
+      text-align:center;
+      color:#9ca3af;
+      margin-top:28px;
+      font-size:14px;
+    }
+
+    footer strong{
+      color:#6b7280;
+      font-weight:800;
+      font-style:italic;
+    }
+
+    @media(max-width:900px){
+      body{
+        display:block;
+      }
+
+      aside{
+        position:relative;
+        width:100%;
+        height:auto;
+      }
+
+      main{
+        margin-left:0;
+        width:100%;
+        padding:18px;
+      }
+
+      .filtros{
+        grid-template-columns:1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <aside>
+    <div class="logo-menu">
+      <h1>Vida em Forma</h1>
+      <p>Ahgora | Relatórios</p>
+    </div>
+
+    <div class="menu">
+      <button class="ativo" onclick="abrirTela('cronograma', this)">Cronograma de Atividades</button>
+      <button onclick="abrirTela('ergonomia', this)">Ergonomia</button>
+      <button onclick="abrirTela('dashboard', this)">Dashboard</button>
+    </div>
+  </aside>
+
+  <main>
+
+    <section id="cronograma" class="tela ativa">
+      <div class="cabecalho">
+        <h2>Cronograma de Atividades</h2>
+        <p>Relatório filtrado por ano e mês com base na tabela Cronograma.</p>
+      </div>
+
+      <div class="card">
+        <div class="filtros">
+          <div class="filtro-box">
+            <label>Ano</label>
+            <div class="multi-select">
+              <button class="multi-btn" onclick="abrirFiltro('anosCronograma')">Selecionar anos</button>
+              <div id="anosCronograma" class="multi-options"></div>
+            </div>
+          </div>
+
+          <div class="filtro-box">
+            <label>Mês</label>
+            <div class="multi-select">
+              <button class="multi-btn" onclick="abrirFiltro('mesesCronograma')">Selecionar meses</button>
+              <div id="mesesCronograma" class="multi-options"></div>
+            </div>
+          </div>
+
+          <button class="btn-limpar" onclick="limparFiltros('Cronograma')">Limpar filtros</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div id="contadorCronograma" class="contador"></div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>VidaInforma</th>
+              <th>Material</th>
+              <th>Atividade</th>
+            </tr>
+          </thead>
+          <tbody id="tabelaCronograma"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="ergonomia" class="tela">
+      <div class="cabecalho">
+        <h2>Ergonomia</h2>
+        <p>Relatório filtrado por ano e mês com base na tabela Ergonomia.</p>
+      </div>
+
+      <div class="card">
+        <div class="filtros">
+          <div class="filtro-box">
+            <label>Ano</label>
+            <div class="multi-select">
+              <button class="multi-btn" onclick="abrirFiltro('anosErgonomia')">Selecionar anos</button>
+              <div id="anosErgonomia" class="multi-options"></div>
+            </div>
+          </div>
+
+          <div class="filtro-box">
+            <label>Mês</label>
+            <div class="multi-select">
+              <button class="multi-btn" onclick="abrirFiltro('mesesErgonomia')">Selecionar meses</button>
+              <div id="mesesErgonomia" class="multi-options"></div>
+            </div>
+          </div>
+
+          <button class="btn-limpar" onclick="limparFiltros('Ergonomia')">Limpar filtros</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div id="contadorErgonomia" class="contador"></div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Orientação</th>
+            </tr>
+          </thead>
+          <tbody id="tabelaErgonomia"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="dashboard" class="tela">
+      <div class="cabecalho">
+        <h2>Dashboard</h2>
+        <p>Área preparada para a próxima etapa dos indicadores e gráficos.</p>
+      </div>
+
+      <div class="card placeholder">
+        <h3>Dashboard em construção</h3>
+        <p>Na próxima etapa vamos criar os gráficos e indicadores consolidados.</p>
+      </div>
+    </section>
+
+    <footer>
+      Desenvolvido por:
+      <strong>Vida em Forma - RL</strong>
+    </footer>
+
+  </main>
+
+  <script>
+    const URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbwJDJ3uE56nR9WCIflDZC12d3bIUgbDKWfW3nc2I1zdcoCcVKEop_bonXKXsrZBTEjM/exec";
+
+    let dadosCronograma = [];
+    let dadosErgonomia = [];
+
+    let filtros = {
+      Cronograma: {
+        anos: [],
+        meses: []
+      },
+      Ergonomia: {
+        anos: [],
+        meses: []
+      }
+    };
+
+    const nomesMeses = [
+      "Janeiro",
+      "Fevereiro",
+      "Março",
+      "Abril",
+      "Maio",
+      "Junho",
+      "Julho",
+      "Agosto",
+      "Setembro",
+      "Outubro",
+      "Novembro",
+      "Dezembro"
+    ];
+
+    carregarDados();
+
+    async function carregarDados(){
+      try{
+        const resposta = await fetch(URL_APPS_SCRIPT + "?acao=listar");
+        const retorno = await resposta.json();
+
+        if(retorno.status !== "sucesso"){
+          alert("Erro ao carregar dados: " + retorno.mensagem);
+          return;
+        }
+
+        dadosCronograma = prepararDatas(retorno.dados.Cronograma || []);
+        dadosErgonomia = prepararDatas(retorno.dados.Ergonomia || []);
+
+        montarFiltros();
+        renderizarCronograma();
+        renderizarErgonomia();
+
+      }catch(erro){
+        alert("Erro ao conectar com o Apps Script.");
+      }
+    }
+
+    function prepararDatas(lista){
+      return lista.map(item => {
+        const data = converterData(item.Data);
+
+        return {
+          ...item,
+          _dataObj: data,
+          _ano: data ? data.getFullYear() : "",
+          _mes: data ? data.getMonth() + 1 : "",
+          _dataFormatada: data ? formatarData(data) : item.Data
+        };
+      });
+    }
+
+    function converterData(valor){
+      if(!valor) return null;
+
+      if(typeof valor === "string" && valor.includes("T")){
+        return new Date(valor);
+      }
+
+      if(typeof valor === "string" && valor.includes("-")){
+        const partes = valor.split("-");
+        return new Date(Number(partes[0]), Number(partes[1]) - 1, Number(partes[2]));
+      }
+
+      if(typeof valor === "string" && valor.includes("/")){
+        const partes = valor.split("/");
+        return new Date(Number(partes[2]), Number(partes[1]) - 1, Number(partes[0]));
+      }
+
+      return new Date(valor);
+    }
+
+    function formatarData(data){
+      return data.toLocaleDateString("pt-BR");
+    }
+
+    function montarFiltros(){
+      criarOpcoesFiltro(
+        "Cronograma",
+        dadosCronograma,
+        "anosCronograma",
+        "mesesCronograma"
+      );
+
+      criarOpcoesFiltro(
+        "Ergonomia",
+        dadosErgonomia,
+        "anosErgonomia",
+        "mesesErgonomia"
+      );
+    }
+
+    function criarOpcoesFiltro(tipo, dados, idAnos, idMeses){
+      const anos = [...new Set(dados.map(item => item._ano).filter(Boolean))].sort();
+      const meses = [...new Set(dados.map(item => item._mes).filter(Boolean))].sort((a,b) => a-b);
+
+      const divAnos = document.getElementById(idAnos);
+      const divMeses = document.getElementById(idMeses);
+
+      divAnos.innerHTML = anos.map(ano => `
+        <label>
+          <input type="checkbox" value="${ano}" onchange="alterarFiltro('${tipo}','anos',this)">
+          ${ano}
+        </label>
+      `).join("");
+
+      divMeses.innerHTML = meses.map(mes => `
+        <label>
+          <input type="checkbox" value="${mes}" onchange="alterarFiltro('${tipo}','meses',this)">
+          ${nomesMeses[mes - 1]}
+        </label>
+      `).join("");
+    }
+
+    function alterarFiltro(tipo, campo, checkbox){
+      const valor = Number(checkbox.value);
+
+      if(checkbox.checked){
+        filtros[tipo][campo].push(valor);
+      }else{
+        filtros[tipo][campo] = filtros[tipo][campo].filter(item => item !== valor);
+      }
+
+      if(tipo === "Cronograma"){
+        renderizarCronograma();
+      }else{
+        renderizarErgonomia();
+      }
+    }
+
+    function filtrarDados(tipo, dados){
+      return dados.filter(item => {
+        const filtroAno = filtros[tipo].anos;
+        const filtroMes = filtros[tipo].meses;
+
+        const passaAno = filtroAno.length === 0 || filtroAno.includes(item._ano);
+        const passaMes = filtroMes.length === 0 || filtroMes.includes(item._mes);
+
+        return passaAno && passaMes;
+      });
+    }
+
+    function renderizarCronograma(){
+      const tbody = document.getElementById("tabelaCronograma");
+      const contador = document.getElementById("contadorCronograma");
+
+      const dados = filtrarDados("Cronograma", dadosCronograma);
+
+      contador.textContent = `${dados.length} registro(s) encontrado(s).`;
+
+      if(dados.length === 0){
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="4" class="vazio">Nenhum registro encontrado.</td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = dados.map(item => `
+        <tr>
+          <td>${item._dataFormatada || ""}</td>
+          <td>${item.VidaInforma || ""}</td>
+          <td>${item.Material || ""}</td>
+          <td>${item.Atividade || ""}</td>
+        </tr>
+      `).join("");
+    }
+
+    function renderizarErgonomia(){
+      const tbody = document.getElementById("tabelaErgonomia");
+      const contador = document.getElementById("contadorErgonomia");
+
+      const dados = filtrarDados("Ergonomia", dadosErgonomia);
+
+      contador.textContent = `${dados.length} registro(s) encontrado(s).`;
+
+      if(dados.length === 0){
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="2" class="vazio">Nenhum registro encontrado.</td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = dados.map(item => `
+        <tr>
+          <td>${item._dataFormatada || ""}</td>
+          <td>${item.Orientacao || ""}</td>
+        </tr>
+      `).join("");
+    }
+
+    function abrirTela(id, botao){
+      document.querySelectorAll(".tela").forEach(tela => {
+        tela.classList.remove("ativa");
+      });
+
+      document.getElementById(id).classList.add("ativa");
+
+      document.querySelectorAll(".menu button").forEach(btn => {
+        btn.classList.remove("ativo");
+      });
+
+      botao.classList.add("ativo");
+    }
+
+    function abrirFiltro(id){
+      document.querySelectorAll(".multi-options").forEach(opcoes => {
+        if(opcoes.id !== id){
+          opcoes.classList.remove("aberto");
+        }
+      });
+
+      document.getElementById(id).classList.toggle("aberto");
+    }
+
+    function limparFiltros(tipo){
+      filtros[tipo].anos = [];
+      filtros[tipo].meses = [];
+
+      const ids = tipo === "Cronograma"
+        ? ["anosCronograma", "mesesCronograma"]
+        : ["anosErgonomia", "mesesErgonomia"];
+
+      ids.forEach(id => {
+        document.querySelectorAll(`#${id} input`).forEach(input => {
+          input.checked = false;
+        });
+      });
+
+      if(tipo === "Cronograma"){
+        renderizarCronograma();
+      }else{
+        renderizarErgonomia();
+      }
+    }
+
+    document.addEventListener("click", function(event){
+      if(!event.target.closest(".multi-select")){
+        document.querySelectorAll(".multi-options").forEach(opcoes => {
+          opcoes.classList.remove("aberto");
+        });
+      }
+    });
+  </script>
+
+</body>
+</html>
