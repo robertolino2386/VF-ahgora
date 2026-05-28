@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vida em Forma - Ahgora</title>
+
+  <style>
+    :root{
+      --azul:#003AFB;
+      --azulClaro:#8ABFFF;
+      --cinza:#6b7280;
+      --borda:#dbe7ff;
+    }
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial, Helvetica, sans-serif;
+    }
+
+    body{
+      background:#ffffff;
+      color:#111827;
+    }
+
+    /* HEADER */
+
+    .topo{
+      display:flex;
+      align-items:center;
+      gap:20px;
+      padding:20px 35px;
+    }
+
+    .logo{
+      width:140px;
+    }
+
+    .banner{
+      flex:1;
+      background:linear-gradient(135deg,#003AFB,#0057ff);
+      color:white;
+      border-radius:0 0 0 70px;
+      padding:30px;
+      box-shadow:0 8px 25px rgba(0,58,251,0.25);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .banner::before{
+      content:"";
+      position:absolute;
+      width:500px;
+      height:500px;
+      border:2px solid rgba(255,255,255,0.15);
+      border-radius:50%;
+      top:-350px;
+      right:-150px;
+    }
+
+    .banner h1{
+      font-size:38px;
+      margin-bottom:8px;
+      position:relative;
+      z-index:2;
+    }
+
+    .banner p{
+      font-size:16px;
+      opacity:0.95;
+      position:relative;
+      z-index:2;
+    }
+
+    /* MAIN */
+
+    .container{
+      width:95%;
+      max-width:1500px;
+      margin:25px auto;
+    }
+
+    .card-selecao{
+      background:white;
+      border-radius:14px;
+      padding:20px;
+      box-shadow:0 8px 24px rgba(138,191,255,0.20);
+      border:1px solid var(--borda);
+      margin-bottom:25px;
+    }
+
+    .card-selecao label{
+      display:block;
+      margin-bottom:10px;
+      font-weight:bold;
+      color:var(--azul);
+    }
+
+    select,
+    input{
+      width:100%;
+      padding:12px;
+      border-radius:10px;
+      border:1px solid #cbd5e1;
+      outline:none;
+      font-size:14px;
+      background:white;
+    }
+
+    select:focus,
+    input:focus{
+      border-color:var(--azul);
+      box-shadow:0 0 0 3px rgba(0,58,251,0.10);
+    }
+
+    .formularios{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+      gap:22px;
+    }
+
+    .formulario{
+      display:none;
+      background:white;
+      border-radius:16px;
+      overflow:hidden;
+      box-shadow:0 8px 24px rgba(138,191,255,0.18);
+      border:1px solid var(--borda);
+    }
+
+    .formulario.ativo{
+      display:block;
+    }
+
+    .form-header{
+      background:linear-gradient(90deg,#8ABFFF20,#8ABFFF05);
+      padding:18px;
+      border-bottom:1px solid #edf3ff;
+    }
+
+    .form-header h2{
+      color:var(--azul);
+      font-size:22px;
+    }
+
+    .form-body{
+      padding:18px;
+    }
+
+    .campo{
+      margin-bottom:15px;
+    }
+
+    .campo label{
+      display:block;
+      margin-bottom:7px;
+      font-size:14px;
+      font-weight:bold;
+      color:#374151;
+    }
+
+    .duplo{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+
+    button{
+      width:100%;
+      padding:14px;
+      border:none;
+      border-radius:12px;
+      background:var(--azul);
+      color:white;
+      font-size:15px;
+      font-weight:bold;
+      cursor:pointer;
+      transition:0.2s;
+    }
+
+    button:hover{
+      background:#002fc7;
+      transform:translateY(-1px);
+    }
+
+    .mensagem{
+      margin-top:20px;
+      padding:14px;
+      border-radius:12px;
+      text-align:center;
+      font-weight:bold;
+      display:none;
+    }
+
+    .sucesso{
+      display:block;
+      background:#dcfce7;
+      color:#166534;
+    }
+
+    .erro{
+      display:block;
+      background:#fee2e2;
+      color:#991b1b;
+    }
+
+    footer{
+      margin:40px 0 25px;
+      text-align:center;
+      color:#9ca3af;
+      font-size:15px;
+    }
+
+    footer strong{
+      color:#6b7280;
+      font-style:italic;
+      font-weight:800;
+    }
+
+    @media(max-width:768px){
+
+      .topo{
+        flex-direction:column;
+        padding:15px;
+      }
+
+      .banner{
+        width:100%;
+        border-radius:25px;
+      }
+
+      .banner h1{
+        font-size:28px;
+      }
+
+      .duplo{
+        grid-template-columns:1fr;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <!-- TOPO -->
+
+  <div class="topo">
+
+    <img
+      class="logo"
+      src="https://i.imgur.com/2WZtOD6.png"
+      alt="Vida em Forma"
+    >
+
+    <div class="banner">
+      <h1>Vida em Forma - Ahgora</h1>
+      <p>Formulários de lançamento para alimentação do dashboard</p>
+    </div>
+
+  </div>
+
+  <!-- CONTAINER -->
+
+  <div class="container">
+
+    <!-- SELETOR -->
+
+    <div class="card-selecao">
+
+      <label>Selecione o formulário que deseja preencher</label>
+
+      <select id="tipoFormulario" onchange="mostrarFormulario()">
+        <option value="">Selecione uma opção</option>
+
+        <option value="cronograma">Tabela Cronograma</option>
+        <option value="ergonomia">Tabela Ergonomia</option>
+        <option value="ginastica">Tabela Ginástica Laboral</option>
+        <option value="queixa">Tabela Queixa</option>
+        <option value="quickmassage">Tabela Quick Massage</option>
+      </select>
+
+    </div>
+
+    <!-- FORMULARIOS -->
+
+    <div class="formularios">
+
+      <!-- CRONOGRAMA -->
+
+      <form id="cronograma" class="formulario">
+
+        <input type="hidden" name="tabela" value="Cronograma">
+
+        <div class="form-header">
+          <h2>Tabela Cronograma</h2>
+        </div>
+
+        <div class="form-body">
+
+          <div class="duplo">
+
+            <div class="campo">
+              <label>Data</label>
+              <input type="date" name="Data" required>
+            </div>
+
+            <div class="campo">
+              <label>VidaInforma</label>
+              <input type="text" name="VidaInforma" required>
+            </div>
+
+          </div>
+
+          <div class="duplo">
+
+            <div class="campo">
+              <label>Material</label>
+              <input type="text" name="Material" required>
+            </div>
+
+            <div class="campo">
+              <label>Atividade</label>
+              <input type="text" name="Atividade" required>
+            </div>
+
+          </div>
+
+          <button type="submit">
+            Enviar Cronograma
+          </button>
+
+        </div>
+
+      </form>
+
+      <!-- ERGONOMIA -->
+
+      <form id="ergonomia" class="formulario">
+
+        <input type="hidden" name="tabela" value="Ergonomia">
+
+        <div class="form-header">
+          <h2>Tabela Ergonomia</h2>
+        </div>
+
+        <div class="form-body">
+
+          <div class="campo">
+            <label>Data</label>
+            <input type="date" name="Data" required>
+          </div>
+
+          <div class="campo">
+            <label>Orientação</label>
+            <input type="text" name="Orientacao" required>
+          </div>
+
+          <button type="submit">
+            Enviar Ergonomia
+          </button>
+
+        </div>
+
+      </form>
+
+      <!-- GINASTICA -->
+
+      <form id="ginastica" class="formulario">
+
+        <input type="hidden" name="tabela" value="Ginastica Laboral">
+
+        <div class="form-header">
+          <h2>Tabela Ginástica Laboral</h2>
+        </div>
+
+        <div class="form-body">
+
+          <div class="duplo">
+
+            <div class="campo">
+              <label>Data</label>
+              <input type="date" name="Data" required>
+            </div>
+
+            <div class="campo">
+              <label>Setor</label>
+
+              <select name="Setor" required>
+
+                <option value="">Selecione</option>
+
+                <option>ADM Vendas</option>
+                <option>Ambulatório Médico</option>
+                <option>Auditoria</option>
+                <option>Cadastro</option>
+                <option>Compras</option>
+                <option>Contabilidade de Custos</option>
+                <option>Contabilidade Financeira</option>
+                <option>Contas a Receber</option>
+                <option>Controle e Distribuição</option>
+                <option>Criação e Arte</option>
+                <option>Financeiro</option>
+                <option>Gestão de Qualidade</option>
+                <option>Jurídico</option>
+                <option>Logística</option>
+                <option>Marketing</option>
+                <option>Meio Ambiente</option>
+                <option>Recursos Humanos</option>
+                <option>SAC</option>
+                <option>Segurança do Trabalho</option>
+                <option>Segurança Patrimonial</option>
+                <option>Serviços Gerais</option>
+                <option>Televendas</option>
+                <option>Trade marketing</option>
+                <option>Treinamento e Recrutamento</option>
+
+              </select>
+
+            </div>
+
+          </div>
+
+          <div class="duplo">
+
+            <div class="campo">
+              <label>Presente</label>
+              <input type="number" name="Presente" required>
+            </div>
+
+            <div class="campo">
+              <label>Total</label>
+              <input type="number" name="Total" required>
+            </div>
+
+          </div>
+
+          <button type="submit">
+            Enviar Ginástica Laboral
+          </button>
+
+        </div>
+
+      </form>
+
+      <!-- QUEIXA -->
+
+      <form id="queixa" class="formulario">
+
+        <input type="hidden" name="tabela" value="Queixa">
+
+        <div class="form-header">
+          <h2>Tabela Queixa</h2>
+        </div>
+
+        <div class="form-body">
+
+          <div class="campo">
+            <label>Data</label>
+            <input type="date" name="Data" required>
+          </div>
+
+          <div class="campo">
+
+            <label>Segmento Corporal</label>
+
+            <select name="SegmentoCorporal" required>
+
+              <option value="">Selecione</option>
+
+              <option>Cabeça</option>
+              <option>Coluna Cervical</option>
+              <option>Coluna Lombar</option>
+              <option>Coluna Torácica</option>
+              <option>Cotovelos</option>
+              <option>Joelhos</option>
+              <option>Ombros</option>
+              <option>Pernas</option>
+              <option>Punhos e Mãos</option>
+              <option>Tornozelos e pés</option>
+
+            </select>
+
+          </div>
+
+          <button type="submit">
+            Enviar Queixa
+          </button>
+
+        </div>
+
+      </form>
+
+      <!-- QUICK MASSAGE -->
+
+      <form id="quickmassage" class="formulario">
+
+        <input type="hidden" name="tabela" value="QuickMassage">
+
+        <div class="form-header">
+          <h2>Tabela Quick Massage</h2>
+        </div>
+
+        <div class="form-body">
+
+          <div class="duplo">
+
+            <div class="campo">
+              <label>Data</label>
+              <input type="date" name="Data" required>
+            </div>
+
+            <div class="campo">
+              <label>Participação</label>
+              <input type="number" name="Participacao" required>
+            </div>
+
+          </div>
+
+          <div class="campo">
+            <label>Total</label>
+            <input type="number" name="Total" required>
+          </div>
+
+          <button type="submit">
+            Enviar Quick Massage
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+    <div id="mensagem" class="mensagem"></div>
+
+  </div>
+
+  <!-- RODAPE -->
+
+  <footer>
+    Desenvolvido por:
+    <strong>Vida em Forma - RL</strong>
+  </footer>
+
+  <!-- SCRIPT -->
+
+  <script>
+
+    const URL_APPS_SCRIPT =
+    "https://script.google.com/macros/s/AKfycbwJDJ3uE56nR9WCIflDZC12d3bIUgbDKWfW3nc2I1zdcoCcVKEop_bonXKXsrZBTEjM/exec";
+
+    function mostrarFormulario(){
+
+      const selecionado =
+      document.getElementById("tipoFormulario").value;
+
+      const formularios =
+      document.querySelectorAll(".formulario");
+
+      formularios.forEach(formulario => {
+        formulario.classList.remove("ativo");
+      });
+
+      if(selecionado){
+        document
+          .getElementById(selecionado)
+          .classList.add("ativo");
+      }
+
+      limparMensagem();
+    }
+
+    const formularios =
+    document.querySelectorAll("form");
+
+    formularios.forEach(form => {
+
+      form.addEventListener("submit", async function(event){
+
+        event.preventDefault();
+
+        const dados = new FormData(form);
+
+        const objeto = {};
+
+        dados.forEach((valor, chave)=>{
+          objeto[chave] = valor;
+        });
+
+        try{
+
+          await fetch(URL_APPS_SCRIPT, {
+            method:"POST",
+            mode:"no-cors",
+            body:JSON.stringify(objeto)
+          });
+
+          mostrarMensagem(
+            "Dados enviados com sucesso!",
+            "sucesso"
+          );
+
+          form.reset();
+
+        }catch(erro){
+
+          mostrarMensagem(
+            "Erro ao enviar os dados.",
+            "erro"
+          );
+        }
+
+      });
+
+    });
+
+    function mostrarMensagem(texto, tipo){
+
+      const mensagem =
+      document.getElementById("mensagem");
+
+      mensagem.textContent = texto;
+
+      mensagem.className =
+      "mensagem " + tipo;
+    }
+
+    function limparMensagem(){
+
+      const mensagem =
+      document.getElementById("mensagem");
+
+      mensagem.className = "mensagem";
+
+      mensagem.textContent = "";
+    }
+
+  </script>
+
+</body>
+</html>
