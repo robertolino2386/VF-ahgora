@@ -7,7 +7,6 @@
   <title>Vida em Forma - Ahgora</title>
 
   <style>
-
     :root{
       --azul:#003AFB;
       --azulClaro:#8ABFFF;
@@ -27,10 +26,6 @@
       color:#111827;
     }
 
-    /* =========================
-       CABEÇALHO
-    ========================== */
-
     .topo{
       width:100%;
       padding:12px 20px 0;
@@ -40,29 +35,17 @@
       width:100%;
       position:relative;
       overflow:hidden;
-
-      background:
-      linear-gradient(
-        135deg,
-        #003AFB 0%,
-        #002fd1 45%,
-        #0057ff 100%
-      );
-
+      background:linear-gradient(135deg,#003AFB 0%,#002fd1 45%,#0057ff 100%);
       border-bottom-left-radius:70px;
       border-bottom-right-radius:25px;
       border-top-left-radius:25px;
       border-top-right-radius:25px;
-
       display:flex;
       align-items:center;
       justify-content:center;
-
       min-height:120px;
       padding:25px;
     }
-
-    /* LINHAS */
 
     .banner::before,
     .banner::after{
@@ -91,13 +74,7 @@
     .banner-overlay{
       position:absolute;
       inset:0;
-
-      background:
-      radial-gradient(
-        circle at top right,
-        rgba(138,191,255,0.35),
-        transparent 30%
-      );
+      background:radial-gradient(circle at top right,rgba(138,191,255,0.35),transparent 30%);
     }
 
     .banner-content{
@@ -126,19 +103,11 @@
       margin:14px auto 0;
     }
 
-    /* =========================
-       CONTAINER
-    ========================== */
-
     .container{
       width:95%;
       max-width:1500px;
       margin:25px auto;
     }
-
-    /* =========================
-       SELETOR
-    ========================== */
 
     .card-selecao{
       background:white;
@@ -174,10 +143,6 @@
       box-shadow:0 0 0 3px rgba(0,58,251,0.10);
     }
 
-    /* =========================
-       FORMULARIOS
-    ========================== */
-
     .formularios{
       display:grid;
       grid-template-columns:repeat(auto-fit,minmax(340px,1fr));
@@ -198,12 +163,7 @@
     }
 
     .form-header{
-      background:linear-gradient(
-        90deg,
-        #8ABFFF25,
-        #8ABFFF08
-      );
-
+      background:linear-gradient(90deg,#8ABFFF25,#8ABFFF08);
       padding:18px;
       border-bottom:1px solid #edf3ff;
     }
@@ -253,10 +213,6 @@
       transform:translateY(-1px);
     }
 
-    /* =========================
-       MENSAGEM
-    ========================== */
-
     .mensagem{
       margin-top:20px;
       padding:14px;
@@ -278,10 +234,6 @@
       color:#991b1b;
     }
 
-    /* =========================
-       RODAPE
-    ========================== */
-
     footer{
       margin:40px 0 25px;
       text-align:center;
@@ -295,12 +247,7 @@
       font-weight:800;
     }
 
-    /* =========================
-       RESPONSIVO
-    ========================== */
-
     @media(max-width:768px){
-
       .banner{
         border-radius:25px;
         min-height:140px;
@@ -317,89 +264,42 @@
       .duplo{
         grid-template-columns:1fr;
       }
-
     }
-
   </style>
-
 </head>
 
 <body>
 
-  <!-- CABEÇALHO -->
-
   <div class="topo">
-
     <div class="banner">
-
       <div class="banner-overlay"></div>
 
       <div class="banner-content">
-
         <h1>Vida em Forma - Ahgora</h1>
-
-        <p>
-          Formulários de lançamento para alimentação do dashboard
-        </p>
-
+        <p>Formulários de lançamento para alimentação do dashboard</p>
         <div class="linha-banner"></div>
-
       </div>
-
     </div>
-
   </div>
-
-  <!-- CONTAINER -->
 
   <div class="container">
 
-    <!-- SELETOR -->
-
     <div class="card-selecao">
-
-      <label>
-        Selecione o formulário que deseja preencher
-      </label>
+      <label>Selecione o formulário que deseja preencher</label>
 
       <select id="tipoFormulario" onchange="mostrarFormulario()">
-
-        <option value="">
-          Selecione uma opção
-        </option>
-
-        <option value="cronograma">
-          Tabela Cronograma
-        </option>
-
-        <option value="ergonomia">
-          Tabela Ergonomia
-        </option>
-
-        <option value="ginastica">
-          Tabela Ginástica Laboral
-        </option>
-
-        <option value="queixa">
-          Tabela Queixa
-        </option>
-
-        <option value="quickmassage">
-          Tabela Quick Massage
-        </option>
-
+        <option value="">Selecione uma opção</option>
+        <option value="cronograma">Tabela Cronograma</option>
+        <option value="ergonomia">Tabela Ergonomia</option>
+        <option value="ginastica">Tabela Ginástica Laboral</option>
+        <option value="queixa">Tabela Queixa</option>
+        <option value="quickmassage">Tabela Quick Massage</option>
       </select>
-
     </div>
-
-    <!-- FORMULARIOS -->
 
     <div class="formularios">
 
-      <!-- CRONOGRAMA -->
-
       <form id="cronograma" class="formulario">
-
         <input type="hidden" name="tabela" value="Cronograma">
 
         <div class="form-header">
@@ -407,9 +307,7 @@
         </div>
 
         <div class="form-body">
-
           <div class="duplo">
-
             <div class="campo">
               <label>Data</label>
               <input type="date" name="Data" required>
@@ -419,11 +317,9 @@
               <label>VidaInforma</label>
               <input type="text" name="VidaInforma" required>
             </div>
-
           </div>
 
           <div class="duplo">
-
             <div class="campo">
               <label>Material</label>
               <input type="text" name="Material" required>
@@ -433,21 +329,13 @@
               <label>Atividade</label>
               <input type="text" name="Atividade" required>
             </div>
-
           </div>
 
-          <button type="submit">
-            Enviar Cronograma
-          </button>
-
+          <button type="submit">Enviar Cronograma</button>
         </div>
-
       </form>
 
-      <!-- ERGONOMIA -->
-
       <form id="ergonomia" class="formulario">
-
         <input type="hidden" name="tabela" value="Ergonomia">
 
         <div class="form-header">
@@ -455,7 +343,6 @@
         </div>
 
         <div class="form-body">
-
           <div class="campo">
             <label>Data</label>
             <input type="date" name="Data" required>
@@ -466,18 +353,11 @@
             <input type="text" name="Orientacao" required>
           </div>
 
-          <button type="submit">
-            Enviar Ergonomia
-          </button>
-
+          <button type="submit">Enviar Ergonomia</button>
         </div>
-
       </form>
 
-      <!-- GINASTICA -->
-
       <form id="ginastica" class="formulario">
-
         <input type="hidden" name="tabela" value="Ginastica Laboral">
 
         <div class="form-header">
@@ -485,22 +365,16 @@
         </div>
 
         <div class="form-body">
-
           <div class="duplo">
-
             <div class="campo">
               <label>Data</label>
               <input type="date" name="Data" required>
             </div>
 
             <div class="campo">
-
               <label>Setor</label>
-
               <select name="Setor" required>
-
                 <option value="">Selecione</option>
-
                 <option>ADM Vendas</option>
                 <option>Ambulatório Médico</option>
                 <option>Auditoria</option>
@@ -525,15 +399,11 @@
                 <option>Televendas</option>
                 <option>Trade marketing</option>
                 <option>Treinamento e Recrutamento</option>
-
               </select>
-
             </div>
-
           </div>
 
           <div class="duplo">
-
             <div class="campo">
               <label>Presente</label>
               <input type="number" name="Presente" required>
@@ -543,21 +413,13 @@
               <label>Total</label>
               <input type="number" name="Total" required>
             </div>
-
           </div>
 
-          <button type="submit">
-            Enviar Ginástica Laboral
-          </button>
-
+          <button type="submit">Enviar Ginástica Laboral</button>
         </div>
-
       </form>
 
-      <!-- QUEIXA -->
-
       <form id="queixa" class="formulario">
-
         <input type="hidden" name="tabela" value="Queixa">
 
         <div class="form-header">
@@ -565,20 +427,15 @@
         </div>
 
         <div class="form-body">
-
           <div class="campo">
             <label>Data</label>
             <input type="date" name="Data" required>
           </div>
 
           <div class="campo">
-
             <label>Segmento Corporal</label>
-
             <select name="SegmentoCorporal" required>
-
               <option value="">Selecione</option>
-
               <option>Cabeça</option>
               <option>Coluna Cervical</option>
               <option>Coluna Lombar</option>
@@ -589,23 +446,19 @@
               <option>Pernas</option>
               <option>Punhos e Mãos</option>
               <option>Tornozelos e pés</option>
-
             </select>
-
           </div>
 
-          <button type="submit">
-            Enviar Queixa
-          </button>
+          <div class="campo">
+            <label>%</label>
+            <input type="number" name="Percentual" placeholder="Informe o percentual" min="0" max="100" step="0.01" required>
+          </div>
 
+          <button type="submit">Enviar Queixa</button>
         </div>
-
       </form>
 
-      <!-- QUICK MASSAGE -->
-
       <form id="quickmassage" class="formulario">
-
         <input type="hidden" name="tabela" value="QuickMassage">
 
         <div class="form-header">
@@ -613,9 +466,7 @@
         </div>
 
         <div class="form-body">
-
           <div class="duplo">
-
             <div class="campo">
               <label>Data</label>
               <input type="date" name="Data" required>
@@ -625,7 +476,6 @@
               <label>Participação</label>
               <input type="number" name="Participacao" required>
             </div>
-
           </div>
 
           <div class="campo">
@@ -633,12 +483,8 @@
             <input type="number" name="Total" required>
           </div>
 
-          <button type="submit">
-            Enviar Quick Massage
-          </button>
-
+          <button type="submit">Enviar Quick Massage</button>
         </div>
-
       </form>
 
     </div>
@@ -647,52 +493,37 @@
 
   </div>
 
-  <!-- RODAPE -->
-
   <footer>
     Desenvolvido por:
     <strong>Vida em Forma - RL</strong>
   </footer>
 
-  <!-- SCRIPT -->
-
   <script>
-
     const URL_APPS_SCRIPT =
     "https://script.google.com/macros/s/AKfycbwJDJ3uE56nR9WCIflDZC12d3bIUgbDKWfW3nc2I1zdcoCcVKEop_bonXKXsrZBTEjM/exec";
 
     function mostrarFormulario(){
-
-      const selecionado =
-      document.getElementById("tipoFormulario").value;
-
-      const formularios =
-      document.querySelectorAll(".formulario");
+      const selecionado = document.getElementById("tipoFormulario").value;
+      const formularios = document.querySelectorAll(".formulario");
 
       formularios.forEach(formulario => {
         formulario.classList.remove("ativo");
       });
 
       if(selecionado){
-        document
-          .getElementById(selecionado)
-          .classList.add("ativo");
+        document.getElementById(selecionado).classList.add("ativo");
       }
 
       limparMensagem();
     }
 
-    const formularios =
-    document.querySelectorAll("form");
+    const formularios = document.querySelectorAll("form");
 
     formularios.forEach(form => {
-
       form.addEventListener("submit", async function(event){
-
         event.preventDefault();
 
         const dados = new FormData(form);
-
         const objeto = {};
 
         dados.forEach((valor, chave)=>{
@@ -700,53 +531,32 @@
         });
 
         try{
-
           await fetch(URL_APPS_SCRIPT, {
             method:"POST",
             mode:"no-cors",
             body:JSON.stringify(objeto)
           });
 
-          mostrarMensagem(
-            "Dados enviados com sucesso!",
-            "sucesso"
-          );
-
+          mostrarMensagem("Dados enviados com sucesso!", "sucesso");
           form.reset();
 
         }catch(erro){
-
-          mostrarMensagem(
-            "Erro ao enviar os dados.",
-            "erro"
-          );
+          mostrarMensagem("Erro ao enviar os dados.", "erro");
         }
-
       });
-
     });
 
     function mostrarMensagem(texto, tipo){
-
-      const mensagem =
-      document.getElementById("mensagem");
-
+      const mensagem = document.getElementById("mensagem");
       mensagem.textContent = texto;
-
-      mensagem.className =
-      "mensagem " + tipo;
+      mensagem.className = "mensagem " + tipo;
     }
 
     function limparMensagem(){
-
-      const mensagem =
-      document.getElementById("mensagem");
-
+      const mensagem = document.getElementById("mensagem");
       mensagem.className = "mensagem";
-
       mensagem.textContent = "";
     }
-
   </script>
 
 </body>
