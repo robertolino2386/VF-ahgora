@@ -147,6 +147,44 @@
       margin-bottom:8px;
     }
 
+    .cabecalho-tabela{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      margin-bottom:12px;
+    }
+
+    .cabecalho-tabela .contador{
+      margin-bottom:0;
+    }
+
+    .btn-pdf{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      padding:10px 14px;
+      border:none;
+      border-radius:12px;
+      background:var(--azul);
+      color:white;
+      font-weight:bold;
+      cursor:pointer;
+      white-space:nowrap;
+      box-shadow:0 6px 14px rgba(0,58,251,0.18);
+    }
+
+    .btn-pdf:hover{
+      background:#002fc7;
+    }
+
+    .tabela-responsiva{
+      width:100%;
+      overflow-x:auto;
+      border-radius:14px;
+    }
+
     .multi-select{
       position:relative;
     }
@@ -160,6 +198,10 @@
       text-align:left;
       cursor:pointer;
       color:#374151;
+      min-height:46px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
 
     .multi-options{
@@ -341,6 +383,47 @@
       font-style:italic;
     }
 
+    @media print{
+      body{
+        background:white;
+        display:block;
+      }
+
+      aside,
+      .cabecalho,
+      .card:has(.filtros),
+      .card:has(.filtro-dashboard),
+      footer,
+      .btn-pdf{
+        display:none !important;
+      }
+
+      main{
+        margin:0;
+        width:100%;
+        padding:0;
+      }
+
+      .tela{
+        display:block !important;
+      }
+
+      .card{
+        box-shadow:none;
+        border:none;
+        padding:0;
+        margin:0;
+      }
+
+      table{
+        font-size:11px;
+      }
+
+      th,td{
+        padding:8px;
+      }
+    }
+
     @media(max-width:900px){
       body{
         display:block;
@@ -355,7 +438,21 @@
       main{
         margin-left:0;
         width:100%;
-        padding:18px;
+        padding:14px;
+      }
+
+      .cabecalho{
+        border-radius:18px;
+        padding:20px;
+      }
+
+      .cabecalho h2{
+        font-size:24px;
+      }
+
+      .card{
+        padding:16px;
+        border-radius:16px;
       }
 
       .filtros,
@@ -368,18 +465,66 @@
         height:330px;
       }
 
+      .cabecalho-tabela{
+        align-items:flex-start;
+        flex-direction:column;
+      }
+
+      .btn-pdf{
+        width:100%;
+      }
+
+      th,td{
+        font-size:13px;
+        padding:10px;
+        white-space:nowrap;
+      }
+
       .desconforto-wrapper{
         min-height:auto;
+        width:100%;
       }
 
       .ponto-corpo{
-        width:22px;
-        height:22px;
+        width:20px;
+        height:20px;
       }
 
       .valor-corpo{
-        font-size:11px;
+        font-size:10px;
         padding:3px 6px;
+      }
+    }
+
+    @media(max-width:520px){
+      aside{
+        padding:14px;
+      }
+
+      .logo-menu{
+        padding:16px;
+        margin-bottom:16px;
+      }
+
+      .menu button{
+        padding:12px;
+        margin-bottom:8px;
+      }
+
+      .cabecalho h2{
+        font-size:22px;
+      }
+
+      .grafico-card h3{
+        font-size:18px;
+      }
+
+      .grafico-area{
+        height:300px;
+      }
+
+      .desconforto-filtro{
+        padding:14px;
       }
     }
   </style>
@@ -394,9 +539,9 @@
     </div>
 
     <div class="menu">
-      <button class="ativo" onclick="abrirTela('cronograma', this)">Cronograma de Atividades</button>
-      <button onclick="abrirTela('ergonomia', this)">Ergonomia</button>
-      <button onclick="abrirTela('dashboard', this)">Dashboard</button>
+      <button data-tela="cronograma" class="ativo" onclick="abrirTela('cronograma', this)">Cronograma de Atividades</button>
+      <button data-tela="ergonomia" onclick="abrirTela('ergonomia', this)">Ergonomia</button>
+      <button data-tela="dashboard" onclick="abrirTela('dashboard', this)">Dashboard</button>
     </div>
   </aside>
 
@@ -431,18 +576,24 @@
       </div>
 
       <div class="card">
-        <div id="contadorCronograma" class="contador"></div>
-        <table>
-          <thead>
-            <tr>
-              <th>Data</th>
-              <th>VidaInforma</th>
-              <th>Material</th>
-              <th>Atividade</th>
-            </tr>
-          </thead>
-          <tbody id="tabelaCronograma"></tbody>
-        </table>
+        <div class="cabecalho-tabela">
+          <div id="contadorCronograma" class="contador"></div>
+          <button class="btn-pdf" onclick="baixarPDFTabela('Cronograma')">📄 Baixar PDF</button>
+        </div>
+
+        <div class="tabela-responsiva">
+          <table>
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>VidaInforma</th>
+                <th>Material</th>
+                <th>Atividade</th>
+              </tr>
+            </thead>
+            <tbody id="tabelaCronograma"></tbody>
+          </table>
+        </div>
       </div>
     </section>
 
@@ -475,16 +626,22 @@
       </div>
 
       <div class="card">
-        <div id="contadorErgonomia" class="contador"></div>
-        <table>
-          <thead>
-            <tr>
-              <th>Data</th>
-              <th>Orientação</th>
-            </tr>
-          </thead>
-          <tbody id="tabelaErgonomia"></tbody>
-        </table>
+        <div class="cabecalho-tabela">
+          <div id="contadorErgonomia" class="contador"></div>
+          <button class="btn-pdf" onclick="baixarPDFTabela('Ergonomia')">📄 Baixar PDF</button>
+        </div>
+
+        <div class="tabela-responsiva">
+          <table>
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Orientação</th>
+              </tr>
+            </thead>
+            <tbody id="tabelaErgonomia"></tbody>
+          </table>
+        </div>
       </div>
     </section>
 
@@ -574,6 +731,9 @@
     let dadosQuickMassage = [];
     let dadosQueixa = [];
 
+    let dadosCronogramaFiltrados = [];
+    let dadosErgonomiaFiltrados = [];
+
     let graficoQuickMassage;
     let graficoGinasticaMensal;
     let graficoGinasticaSetor;
@@ -596,16 +756,16 @@
     ];
 
     const posicoesSegmentos = {
-      "Cabeça": { x: 50.2, y: 5.9, valorX: 66, valorY: 5.9 },
-      "Coluna Cervical": { x: 50.2, y: 12.1, valorX: 31, valorY: 11.8 },
-      "Coluna Torácica": { x: 49.6, y: 23.1, valorX: 27, valorY: 23.0 },
-      "Coluna Lombar": { x: 49.8, y: 38.3, valorX: 28, valorY: 38.2 },
-      "Ombros": { x: 65.0, y: 17.0, valorX: 83, valorY: 17.0 },
-      "Cotovelos": { x: 69.4, y: 30.0, valorX: 85, valorY: 30.0 },
-      "Punhos e Mãos": { x: 73.7, y: 45.0, valorX: 88, valorY: 45.0 },
-      "Pernas": { x: 44.8, y: 57.0, valorX: 16, valorY: 56.8 },
-      "Joelhos": { x: 58.6, y: 61.8, valorX: 78, valorY: 61.8 },
-      "Tornozelos e pés": { x: 41.4, y: 81.6, valorX: 22, valorY: 81.5 }
+      "Cabeça": { x: 50.2, y: 5.9, valorX: 76, valorY: 8.3 },
+      "Coluna Cervical": { x: 50.2, y: 12.1, valorX: 23, valorY: 14.3 },
+      "Coluna Torácica": { x: 49.6, y: 23.1, valorX: 20, valorY: 25.3 },
+      "Coluna Lombar": { x: 49.8, y: 38.3, valorX: 20, valorY: 40.7 },
+      "Ombros": { x: 65.0, y: 17.0, valorX: 88, valorY: 19.4 },
+      "Cotovelos": { x: 69.4, y: 30.0, valorX: 89, valorY: 32.4 },
+      "Punhos e Mãos": { x: 73.7, y: 45.0, valorX: 89, valorY: 47.5 },
+      "Pernas": { x: 44.8, y: 57.0, valorX: 14, valorY: 59.2 },
+      "Joelhos": { x: 58.6, y: 61.8, valorX: 82, valorY: 64.2 },
+      "Tornozelos e pés": { x: 41.4, y: 81.6, valorX: 20, valorY: 84.0 }
     };
 
     const pluginRotuloDados = {
@@ -661,6 +821,8 @@
         renderizarErgonomia();
         renderizarDashboard();
         renderizarDesconforto();
+        restaurarTelaAtiva();
+        atualizarTodosBotoesFiltro();
 
       }catch(erro){
         alert("Erro ao conectar com o Apps Script.");
@@ -679,6 +841,10 @@
           _periodo: data ? `${mesesAbrev[data.getMonth()]}.${data.getFullYear()}` : "",
           _dataFormatada: data ? data.toLocaleDateString("pt-BR") : item.Data
         };
+      }).sort((a,b) => {
+        const dataA = a._dataObj ? a._dataObj.getTime() : 0;
+        const dataB = b._dataObj ? b._dataObj.getTime() : 0;
+        return dataA - dataB;
       });
     }
 
@@ -772,6 +938,11 @@
         filtros[tipo][campo] = filtros[tipo][campo].filter(item => item !== valor);
       }
 
+      atualizarBotaoFiltro(tipo, campo);
+
+      atualizarBotaoFiltro(tipo, "anos");
+      atualizarBotaoFiltro(tipo, "meses");
+
       if(tipo === "Cronograma"){
         renderizarCronograma();
       }else{
@@ -788,11 +959,13 @@
         filtros.Dashboard.anos = filtros.Dashboard.anos.filter(item => item !== valor);
       }
 
+      atualizarBotaoFiltroDashboard();
       renderizarDashboard();
     }
 
     function alterarFiltroDesconforto(radio){
       filtros.Desconforto.periodo = radio.value;
+      atualizarBotaoFiltroDesconforto();
       renderizarDesconforto();
     }
 
@@ -813,8 +986,10 @@
     function renderizarCronograma(){
       const tbody = document.getElementById("tabelaCronograma");
       const contador = document.getElementById("contadorCronograma");
-      const dados = filtrarDados("Cronograma", dadosCronograma);
+      const dados = filtrarDados("Cronograma", dadosCronograma)
+        .sort((a,b) => (a._dataObj?.getTime() || 0) - (b._dataObj?.getTime() || 0));
 
+      dadosCronogramaFiltrados = dados;
       contador.textContent = `${dados.length} registro(s) encontrado(s).`;
 
       if(dados.length === 0){
@@ -835,8 +1010,10 @@
     function renderizarErgonomia(){
       const tbody = document.getElementById("tabelaErgonomia");
       const contador = document.getElementById("contadorErgonomia");
-      const dados = filtrarDados("Ergonomia", dadosErgonomia);
+      const dados = filtrarDados("Ergonomia", dadosErgonomia)
+        .sort((a,b) => (a._dataObj?.getTime() || 0) - (b._dataObj?.getTime() || 0));
 
+      dadosErgonomiaFiltrados = dados;
       contador.textContent = `${dados.length} registro(s) encontrado(s).`;
 
       if(dados.length === 0){
@@ -1071,6 +1248,8 @@
       document.querySelectorAll(".menu button").forEach(btn => btn.classList.remove("ativo"));
       botao.classList.add("ativo");
 
+      localStorage.setItem("vidaEmFormaTelaAtiva", id);
+
       if(id === "dashboard"){
         setTimeout(() => {
           renderizarDashboard();
@@ -1116,6 +1295,159 @@
       });
 
       renderizarDashboard();
+    }
+
+
+    function atualizarTodosBotoesFiltro(){
+      atualizarBotaoFiltro("Cronograma", "anos");
+      atualizarBotaoFiltro("Cronograma", "meses");
+      atualizarBotaoFiltro("Ergonomia", "anos");
+      atualizarBotaoFiltro("Ergonomia", "meses");
+      atualizarBotaoFiltroDashboard();
+      atualizarBotaoFiltroDesconforto();
+    }
+
+    function atualizarBotaoFiltro(tipo, campo){
+      const mapa = {
+        Cronograma: {
+          anos: { id: "anosCronograma", texto: "Selecionar anos" },
+          meses: { id: "mesesCronograma", texto: "Selecionar meses" }
+        },
+        Ergonomia: {
+          anos: { id: "anosErgonomia", texto: "Selecionar anos" },
+          meses: { id: "mesesErgonomia", texto: "Selecionar meses" }
+        }
+      };
+
+      const config = mapa[tipo][campo];
+      const selecionados = filtros[tipo][campo];
+
+      const botao = document.querySelector(`button[onclick="abrirFiltro('${config.id}')"]`);
+
+      if(!botao) return;
+
+      if(selecionados.length === 0){
+        botao.textContent = config.texto;
+        return;
+      }
+
+      if(campo === "meses"){
+        botao.textContent = selecionados
+          .sort((a,b) => a-b)
+          .map(mes => nomesMeses[mes - 1])
+          .join(", ");
+      }else{
+        botao.textContent = selecionados.sort((a,b) => a-b).join(", ");
+      }
+    }
+
+    function atualizarBotaoFiltroDashboard(){
+      const botao = document.querySelector(`button[onclick="abrirFiltro('anosDashboard')"]`);
+      if(!botao) return;
+
+      if(filtros.Dashboard.anos.length === 0){
+        botao.textContent = "Selecionar anos";
+      }else{
+        botao.textContent = filtros.Dashboard.anos.sort((a,b) => a-b).join(", ");
+      }
+    }
+
+    function atualizarBotaoFiltroDesconforto(){
+      const botao = document.querySelector(`button[onclick="abrirFiltro('periodosDesconforto')"]`);
+      if(!botao) return;
+
+      botao.textContent = filtros.Desconforto.periodo || "Selecionar período";
+    }
+
+    function baixarPDFTabela(tipo){
+      const dados = tipo === "Cronograma" ? dadosCronogramaFiltrados : dadosErgonomiaFiltrados;
+      const titulo = tipo === "Cronograma" ? "Cronograma de Atividades" : "Ergonomia";
+      const subtitulo = montarResumoFiltrosPDF(tipo);
+      const colunas = tipo === "Cronograma"
+        ? ["Data", "VidaInforma", "Material", "Atividade"]
+        : ["Data", "Orientacao"];
+
+      const janela = window.open("", "_blank");
+
+      const linhas = dados.map(item => {
+        if(tipo === "Cronograma"){
+          return `
+            <tr>
+              <td>${item._dataFormatada || ""}</td>
+              <td>${item.VidaInforma || ""}</td>
+              <td>${item.Material || ""}</td>
+              <td>${item.Atividade || ""}</td>
+            </tr>
+          `;
+        }
+
+        return `
+          <tr>
+            <td>${item._dataFormatada || ""}</td>
+            <td>${item.Orientacao || ""}</td>
+          </tr>
+        `;
+      }).join("");
+
+      janela.document.write(`
+        <!DOCTYPE html>
+        <html lang="pt-BR">
+        <head>
+          <meta charset="UTF-8">
+          <title>${titulo}</title>
+          <style>
+            *{ box-sizing:border-box; font-family:Arial, Helvetica, sans-serif; }
+            body{ margin:24px; color:#111827; }
+            h1{ color:#003AFB; margin:0 0 6px; font-size:24px; }
+            p{ margin:0 0 18px; color:#6b7280; font-size:13px; }
+            table{ width:100%; border-collapse:collapse; }
+            thead{ background:#003AFB; color:white; }
+            th,td{ border:1px solid #d1d5db; padding:8px; text-align:left; font-size:12px; }
+            tbody tr:nth-child(even){ background:#f8fbff; }
+            .rodape{ margin-top:18px; font-size:11px; color:#6b7280; text-align:right; }
+          </style>
+        </head>
+        <body>
+          <h1>${titulo}</h1>
+          <p>${subtitulo} | ${dados.length} registro(s)</p>
+          <table>
+            <thead>
+              <tr>${colunas.map(col => `<th>${col === "Orientacao" ? "Orientação" : col}</th>`).join("")}</tr>
+            </thead>
+            <tbody>
+              ${linhas || `<tr><td colspan="${colunas.length}">Nenhum registro encontrado.</td></tr>`}
+            </tbody>
+          </table>
+          <div class="rodape">Desenvolvido por: Vida em Forma - RL</div>
+          <script>
+            window.onload = function(){
+              window.print();
+            };
+          <\/script>
+        </body>
+        </html>
+      `);
+
+      janela.document.close();
+    }
+
+    function montarResumoFiltrosPDF(tipo){
+      const anos = filtros[tipo].anos.length
+        ? filtros[tipo].anos.sort((a,b) => a-b).join(", ")
+        : "Todos os anos";
+
+      const meses = filtros[tipo].meses.length
+        ? filtros[tipo].meses.sort((a,b) => a-b).map(mes => nomesMeses[mes - 1]).join(", ")
+        : "Todos os meses";
+
+      return `Filtros: ${anos} | ${meses}`;
+    }
+
+    function restaurarTelaAtiva(){
+      const telaSalva = localStorage.getItem("vidaEmFormaTelaAtiva") || "cronograma";
+      const botao = document.querySelector(`.menu button[data-tela="${telaSalva}"]`) || document.querySelector(`.menu button[data-tela="cronograma"]`);
+
+      abrirTela(telaSalva, botao);
     }
 
     document.addEventListener("click", function(event){
