@@ -14,6 +14,9 @@
       --cinza:#6b7280;
       --borda:#dbe7ff;
       --fundo:#f7faff;
+      --verde:#22c55e;
+      --amarelo:#fde047;
+      --vermelho:#ef4444;
     }
 
     *{
@@ -94,8 +97,6 @@
       border-radius:24px;
       padding:26px;
       margin-bottom:24px;
-      position:relative;
-      overflow:hidden;
     }
 
     .cabecalho h2{
@@ -170,8 +171,8 @@
       border-radius:12px;
       box-shadow:0 8px 24px rgba(0,0,0,0.12);
       padding:10px;
-      z-index:10;
-      max-height:220px;
+      z-index:20;
+      max-height:240px;
       overflow:auto;
     }
 
@@ -263,6 +264,109 @@
       position:relative;
     }
 
+    .desconforto-layout{
+      display:grid;
+      grid-template-columns:280px 1fr;
+      gap:24px;
+      align-items:start;
+    }
+
+    .desconforto-filtro{
+      background:#f8fbff;
+      border:1px solid var(--borda);
+      border-radius:16px;
+      padding:18px;
+    }
+
+    .desconforto-filtro h4{
+      color:var(--azul);
+      margin-bottom:10px;
+      font-size:17px;
+    }
+
+    .desconforto-wrapper{
+      position:relative;
+      min-height:620px;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      overflow:hidden;
+    }
+
+    .corpo-svg{
+      width:300px;
+      max-width:100%;
+      opacity:0.92;
+    }
+
+    .ponto-corpo{
+      position:absolute;
+      width:18px;
+      height:18px;
+      border-radius:50%;
+      border:1.5px solid rgba(0,0,0,0.25);
+      transform:translate(-50%,-50%);
+      z-index:3;
+    }
+
+    .ponto-verde{ background:var(--verde); }
+    .ponto-amarelo{ background:var(--amarelo); }
+    .ponto-vermelho{ background:var(--vermelho); }
+    .ponto-transparente{
+      background:transparent;
+      border:1px solid transparent;
+    }
+
+    .rotulo-corpo{
+      position:absolute;
+      font-size:13px;
+      color:#111827;
+      font-weight:bold;
+      white-space:nowrap;
+      z-index:4;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+
+    .rotulo-corpo::before{
+      content:"";
+      display:block;
+      height:1px;
+      width:72px;
+      background:#6b7280;
+    }
+
+    .rotulo-esquerda{
+      flex-direction:row-reverse;
+    }
+
+    .rotulo-esquerda::before{
+      width:72px;
+    }
+
+    .legenda-desconforto{
+      display:flex;
+      flex-wrap:wrap;
+      gap:14px;
+      margin-top:18px;
+      color:#374151;
+      font-size:13px;
+    }
+
+    .legenda-item{
+      display:flex;
+      align-items:center;
+      gap:6px;
+    }
+
+    .legenda-bolinha{
+      width:13px;
+      height:13px;
+      border-radius:50%;
+      border:1px solid #9ca3af;
+    }
+
     footer{
       text-align:center;
       color:#9ca3af;
@@ -294,12 +398,19 @@
       }
 
       .filtros,
-      .filtro-dashboard{
+      .filtro-dashboard,
+      .desconforto-layout{
         grid-template-columns:1fr;
       }
 
       .grafico-area{
         height:330px;
+      }
+
+      .desconforto-wrapper{
+        min-height:560px;
+        transform:scale(0.92);
+        transform-origin:top center;
       }
     }
   </style>
@@ -411,13 +522,13 @@
     <section id="dashboard" class="tela">
       <div class="cabecalho">
         <h2>Dashboard</h2>
-        <p>Indicadores gráficos de Quick Massage e Ginástica Laboral.</p>
+        <p>Indicadores gráficos de Quick Massage, Ginástica Laboral e Desconforto.</p>
       </div>
 
       <div class="card">
         <div class="filtro-dashboard">
           <div class="filtro-box">
-            <label>Ano</label>
+            <label>Ano dos gráficos de participação</label>
             <div class="multi-select">
               <button class="multi-btn" onclick="abrirFiltro('anosDashboard')">Selecionar anos</button>
               <div id="anosDashboard" class="multi-options"></div>
@@ -454,6 +565,40 @@
           </div>
         </div>
 
+        <div class="card grafico-card">
+          <h3>Desconforto</h3>
+          <p>Mapa corporal por segmento, colorido conforme o percentual informado na tabela Queixa.</p>
+
+          <div class="desconforto-layout">
+            <div class="desconforto-filtro">
+              <h4>Filtro exclusivo deste gráfico</h4>
+              <div class="filtro-box">
+                <label>Mês/Ano</label>
+                <div class="multi-select">
+                  <button class="multi-btn" onclick="abrirFiltro('periodosDesconforto')">Selecionar período</button>
+                  <div id="periodosDesconforto" class="multi-options"></div>
+                </div>
+              </div>
+
+              <div class="legenda-desconforto">
+                <div class="legenda-item"><span class="legenda-bolinha" style="background:transparent;"></span> 0%</div>
+                <div class="legenda-item"><span class="legenda-bolinha" style="background:#22c55e;"></span> 0,01% a 19,99%</div>
+                <div class="legenda-item"><span class="legenda-bolinha" style="background:#fde047;"></span> 20% a 49,99%</div>
+                <div class="legenda-item"><span class="legenda-bolinha" style="background:#ef4444;"></span> 50% ou mais</div>
+              </div>
+            </div>
+
+            <div class="desconforto-wrapper" id="areaDesconforto">
+              <svg class="corpo-svg" viewBox="0 0 220 520" xmlns="http://www.w3.org/2000/svg">
+                <g fill="#ffc4a8">
+                  <circle cx="110" cy="42" r="28"/>
+                  <path d="M87 72 C92 88 128 88 133 72 C142 78 150 92 153 118 L166 205 C171 237 168 281 154 309 C149 317 137 314 140 303 C150 269 149 238 144 214 L132 151 L128 242 L142 485 C143 499 134 510 122 510 C112 510 108 500 108 488 L102 318 L96 488 C96 500 91 510 80 510 C68 510 60 499 62 485 L76 242 L72 151 L60 214 C55 238 54 269 64 303 C67 314 55 317 50 309 C36 281 33 237 38 205 L51 118 C54 92 62 78 87 72 Z"/>
+                </g>
+              </svg>
+            </div>
+          </div>
+        </div>
+
       </div>
     </section>
 
@@ -471,6 +616,7 @@
     let dadosErgonomia = [];
     let dadosGinastica = [];
     let dadosQuickMassage = [];
+    let dadosQueixa = [];
 
     let graficoQuickMassage;
     let graficoGinasticaMensal;
@@ -479,13 +625,32 @@
     let filtros = {
       Cronograma: { anos: [], meses: [] },
       Ergonomia: { anos: [], meses: [] },
-      Dashboard: { anos: [] }
+      Dashboard: { anos: [] },
+      Desconforto: { periodo: "" }
     };
 
     const nomesMeses = [
       "Janeiro","Fevereiro","Março","Abril","Maio","Junho",
       "Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"
     ];
+
+    const mesesAbrev = [
+      "JAN","FEV","MAR","ABR","MAI","JUN",
+      "JUL","AGO","SET","OUT","NOV","DEZ"
+    ];
+
+    const posicoesSegmentos = {
+      "Cabeça": { x: 50, y: 11, labelX: 62, labelY: 10, lado: "direita" },
+      "Coluna Cervical": { x: 50, y: 17, labelX: 26, labelY: 16, lado: "esquerda" },
+      "Coluna Torácica": { x: 50, y: 25, labelX: 28, labelY: 24, lado: "esquerda" },
+      "Coluna Lombar": { x: 50, y: 40, labelX: 28, labelY: 39, lado: "esquerda" },
+      "Ombros": { x: 61, y: 21, labelX: 74, labelY: 21, lado: "direita" },
+      "Cotovelos": { x: 66, y: 34, labelX: 76, labelY: 34, lado: "direita" },
+      "Punhos e Mãos": { x: 69, y: 52, labelX: 78, labelY: 52, lado: "direita" },
+      "Pernas": { x: 45, y: 63, labelX: 20, labelY: 63, lado: "esquerda" },
+      "Joelhos": { x: 56, y: 71, labelX: 70, labelY: 71, lado: "direita" },
+      "Tornozelos e pés": { x: 46, y: 88, labelX: 22, labelY: 88, lado: "esquerda" }
+    };
 
     const pluginRotuloDados = {
       id: "pluginRotuloDados",
@@ -505,10 +670,7 @@
             ctx.fillStyle = "#111827";
             ctx.textAlign = "center";
             ctx.textBaseline = "bottom";
-
-            const texto = valor.toFixed(2).replace(".", ",") + "%";
-
-            ctx.fillText(texto, bar.x, bar.y - 6);
+            ctx.fillText(valor.toFixed(2).replace(".", ",") + "%", bar.x, bar.y - 6);
             ctx.restore();
           });
         });
@@ -533,13 +695,16 @@
         dadosErgonomia = prepararDatas(retorno.dados.Ergonomia || []);
         dadosGinastica = prepararDatas(retorno.dados.GinasticaLaboral || []);
         dadosQuickMassage = prepararDatas(retorno.dados.QuickMassage || []);
+        dadosQueixa = prepararDatas(retorno.dados.Queixa || []);
 
         montarFiltros();
         montarFiltroDashboard();
+        montarFiltroDesconforto();
 
         renderizarCronograma();
         renderizarErgonomia();
         renderizarDashboard();
+        renderizarDesconforto();
 
       }catch(erro){
         alert("Erro ao conectar com o Apps Script.");
@@ -555,6 +720,7 @@
           _dataObj: data,
           _ano: data ? data.getFullYear() : "",
           _mes: data ? data.getMonth() + 1 : "",
+          _periodo: data ? `${mesesAbrev[data.getMonth()]}.${data.getFullYear()}` : "",
           _dataFormatada: data ? data.toLocaleDateString("pt-BR") : item.Data
         };
       });
@@ -593,12 +759,31 @@
         ].filter(Boolean))
       ].sort();
 
-      const divAnos = document.getElementById("anosDashboard");
-
-      divAnos.innerHTML = anos.map(ano => `
+      document.getElementById("anosDashboard").innerHTML = anos.map(ano => `
         <label>
           <input type="checkbox" value="${ano}" onchange="alterarFiltroDashboard(this)">
           ${ano}
+        </label>
+      `).join("");
+    }
+
+    function montarFiltroDesconforto(){
+      const periodos = [...new Set(dadosQueixa.map(item => item._periodo).filter(Boolean))];
+
+      periodos.sort((a,b) => {
+        const [ma, aa] = a.split(".");
+        const [mb, ab] = b.split(".");
+        return Number(aa) - Number(ab) || mesesAbrev.indexOf(ma) - mesesAbrev.indexOf(mb);
+      });
+
+      if(periodos.length > 0 && !filtros.Desconforto.periodo){
+        filtros.Desconforto.periodo = periodos[periodos.length - 1];
+      }
+
+      document.getElementById("periodosDesconforto").innerHTML = periodos.map(periodo => `
+        <label>
+          <input type="radio" name="periodoDesconforto" value="${periodo}" ${periodo === filtros.Desconforto.periodo ? "checked" : ""} onchange="alterarFiltroDesconforto(this)">
+          ${periodo}
         </label>
       `).join("");
     }
@@ -648,6 +833,11 @@
       }
 
       renderizarDashboard();
+    }
+
+    function alterarFiltroDesconforto(radio){
+      filtros.Desconforto.periodo = radio.value;
+      renderizarDesconforto();
     }
 
     function filtrarDados(tipo, dados){
@@ -714,7 +904,6 @@
 
     function renderizarGraficoQuickMassage(){
       const dados = filtrarDashboard(dadosQuickMassage);
-
       const totaisMes = Array(12).fill(0);
       const participacaoMes = Array(12).fill(0);
 
@@ -730,21 +919,13 @@
         return totaisMes[i] > 0 ? (valor / totaisMes[i]) * 100 : 0;
       });
 
-      if(graficoQuickMassage){
-        graficoQuickMassage.destroy();
-      }
+      if(graficoQuickMassage) graficoQuickMassage.destroy();
 
-      graficoQuickMassage = criarGraficoBarra(
-        "graficoQuickMassage",
-        nomesMeses,
-        percentuais,
-        "Participação %"
-      );
+      graficoQuickMassage = criarGraficoBarra("graficoQuickMassage", nomesMeses, percentuais, "Participação %");
     }
 
     function renderizarGraficoGinasticaMensal(){
       const dados = filtrarDashboard(dadosGinastica);
-
       const totaisMes = Array(12).fill(0);
       const presentesMes = Array(12).fill(0);
 
@@ -760,16 +941,9 @@
         return totaisMes[i] > 0 ? (valor / totaisMes[i]) * 100 : 0;
       });
 
-      if(graficoGinasticaMensal){
-        graficoGinasticaMensal.destroy();
-      }
+      if(graficoGinasticaMensal) graficoGinasticaMensal.destroy();
 
-      graficoGinasticaMensal = criarGraficoBarra(
-        "graficoGinasticaMensal",
-        nomesMeses,
-        percentuais,
-        "Adesão média %"
-      );
+      graficoGinasticaMensal = criarGraficoBarra("graficoGinasticaMensal", nomesMeses, percentuais, "Adesão média %");
     }
 
     function renderizarGraficoGinasticaSetor(){
@@ -780,10 +954,7 @@
         const setor = item.Setor || "Não informado";
 
         if(!setores[setor]){
-          setores[setor] = {
-            presente: 0,
-            total: 0
-          };
+          setores[setor] = { presente: 0, total: 0 };
         }
 
         setores[setor].presente += numero(item.Presente);
@@ -793,21 +964,85 @@
       const labels = Object.keys(setores).sort();
 
       const valores = labels.map(setor => {
-        return setores[setor].total > 0
-          ? (setores[setor].presente / setores[setor].total) * 100
-          : 0;
+        return setores[setor].total > 0 ? (setores[setor].presente / setores[setor].total) * 100 : 0;
       });
 
-      if(graficoGinasticaSetor){
-        graficoGinasticaSetor.destroy();
+      if(graficoGinasticaSetor) graficoGinasticaSetor.destroy();
+
+      graficoGinasticaSetor = criarGraficoBarra("graficoGinasticaSetor", labels, valores, "Adesão por setor %");
+    }
+
+    function renderizarDesconforto(){
+      const area = document.getElementById("areaDesconforto");
+
+      area.querySelectorAll(".ponto-corpo, .rotulo-corpo").forEach(el => el.remove());
+
+      const periodo = filtros.Desconforto.periodo;
+      const dadosPeriodo = dadosQueixa.filter(item => item._periodo === periodo);
+
+      const valores = {};
+
+      dadosPeriodo.forEach(item => {
+        const segmento = item.SegmentoCorporal;
+        const valor = normalizarPercentual(item.Percentual);
+
+        if(!segmento) return;
+
+        if(!valores[segmento]){
+          valores[segmento] = [];
+        }
+
+        valores[segmento].push(valor);
+      });
+
+      Object.keys(posicoesSegmentos).forEach(segmento => {
+        const lista = valores[segmento] || [];
+        const media = lista.length ? lista.reduce((a,b) => a + b, 0) / lista.length : 0;
+        const pos = posicoesSegmentos[segmento];
+        const classeCor = definirClasseCor(media);
+
+        const ponto = document.createElement("div");
+        ponto.className = `ponto-corpo ${classeCor}`;
+        ponto.style.left = pos.x + "%";
+        ponto.style.top = pos.y + "%";
+        area.appendChild(ponto);
+
+        const rotulo = document.createElement("div");
+        rotulo.className = `rotulo-corpo ${pos.lado === "esquerda" ? "rotulo-esquerda" : ""}`;
+        rotulo.style.left = pos.labelX + "%";
+        rotulo.style.top = pos.labelY + "%";
+        rotulo.textContent = `${segmento} ${formatarPercentual(media)}`;
+        area.appendChild(rotulo);
+      });
+    }
+
+    function definirClasseCor(valor){
+      if(valor === 0) return "ponto-transparente";
+      if(valor > 0 && valor < 20) return "ponto-verde";
+      if(valor >= 20 && valor < 50) return "ponto-amarelo";
+      return "ponto-vermelho";
+    }
+
+    function normalizarPercentual(valor){
+      if(valor === null || valor === undefined || valor === "") return 0;
+
+      let numeroConvertido = Number(
+        String(valor)
+          .replace("%", "")
+          .replace(",", ".")
+      );
+
+      if(isNaN(numeroConvertido)) return 0;
+
+      if(numeroConvertido > 0 && numeroConvertido <= 1){
+        numeroConvertido = numeroConvertido * 100;
       }
 
-      graficoGinasticaSetor = criarGraficoBarra(
-        "graficoGinasticaSetor",
-        labels,
-        valores,
-        "Adesão por setor %"
-      );
+      return numeroConvertido;
+    }
+
+    function formatarPercentual(valor){
+      return valor.toFixed(2).replace(".", ",") + "%";
     }
 
     function criarGraficoBarra(idCanvas, labels, valores, titulo){
@@ -830,15 +1065,9 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          layout: {
-            padding: {
-              top: 24
-            }
-          },
+          layout: { padding: { top: 24 } },
           plugins: {
-            legend: {
-              display: false
-            },
+            legend: { display: false },
             tooltip: {
               callbacks: {
                 label: function(context){
@@ -849,35 +1078,20 @@
           },
           scales: {
             x: {
-              grid: {
-                display: false,
-                drawBorder: false
-              },
-              border: {
-                display: false
-              },
+              grid: { display: false, drawBorder: false },
+              border: { display: false },
               ticks: {
                 color: "#374151",
-                font: {
-                  size: 12,
-                  weight: "bold"
-                }
+                font: { size: 12, weight: "bold" }
               }
             },
             y: {
               display: false,
               beginAtZero: true,
               max: 100,
-              grid: {
-                display: false,
-                drawBorder: false
-              },
-              border: {
-                display: false
-              },
-              ticks: {
-                display: false
-              }
+              grid: { display: false, drawBorder: false },
+              border: { display: false },
+              ticks: { display: false }
             }
           }
         }
@@ -902,7 +1116,10 @@
       botao.classList.add("ativo");
 
       if(id === "dashboard"){
-        setTimeout(renderizarDashboard, 200);
+        setTimeout(() => {
+          renderizarDashboard();
+          renderizarDesconforto();
+        }, 200);
       }
     }
 
