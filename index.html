@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Vida em Forma - Ahgora</title>
 
   <style>
+
     :root{
       --azul:#003AFB;
       --azulClaro:#8ABFFF;
@@ -25,56 +27,108 @@
       color:#111827;
     }
 
-    /* HEADER */
+    /* =========================
+       CABEÇALHO
+    ========================== */
 
     .topo{
-      display:flex;
-      align-items:center;
-      gap:20px;
-      padding:20px 35px;
-    }
-
-    .logo{
-      width:140px;
+      width:100%;
+      padding:12px 20px 0;
     }
 
     .banner{
-      flex:1;
-      background:linear-gradient(135deg,#003AFB,#0057ff);
-      color:white;
-      border-radius:0 0 0 70px;
-      padding:30px;
-      box-shadow:0 8px 25px rgba(0,58,251,0.25);
+      width:100%;
       position:relative;
       overflow:hidden;
+
+      background:
+      linear-gradient(
+        135deg,
+        #003AFB 0%,
+        #002fd1 45%,
+        #0057ff 100%
+      );
+
+      border-bottom-left-radius:70px;
+      border-bottom-right-radius:25px;
+      border-top-left-radius:25px;
+      border-top-right-radius:25px;
+
+      display:flex;
+      align-items:center;
+      justify-content:center;
+
+      min-height:120px;
+      padding:25px;
+    }
+
+    /* LINHAS */
+
+    .banner::before,
+    .banner::after{
+      content:"";
+      position:absolute;
+      border-radius:50%;
+      border:2px solid rgba(138,191,255,0.18);
     }
 
     .banner::before{
-      content:"";
-      position:absolute;
-      width:500px;
-      height:500px;
-      border:2px solid rgba(255,255,255,0.15);
-      border-radius:50%;
-      top:-350px;
-      right:-150px;
+      width:700px;
+      height:700px;
+      top:-520px;
+      left:-100px;
+      transform:rotate(-12deg);
     }
 
-    .banner h1{
+    .banner::after{
+      width:700px;
+      height:700px;
+      bottom:-540px;
+      right:-120px;
+      transform:rotate(15deg);
+    }
+
+    .banner-overlay{
+      position:absolute;
+      inset:0;
+
+      background:
+      radial-gradient(
+        circle at top right,
+        rgba(138,191,255,0.35),
+        transparent 30%
+      );
+    }
+
+    .banner-content{
+      position:relative;
+      z-index:2;
+      text-align:center;
+      color:white;
+    }
+
+    .banner-content h1{
       font-size:38px;
       margin-bottom:8px;
-      position:relative;
-      z-index:2;
+      font-weight:800;
     }
 
-    .banner p{
-      font-size:16px;
-      opacity:0.95;
-      position:relative;
-      z-index:2;
+    .banner-content p{
+      font-size:17px;
+      opacity:0.96;
     }
 
-    /* MAIN */
+    .linha-banner{
+      width:160px;
+      height:4px;
+      background:#8ABFFF;
+      border-radius:999px;
+      margin:14px auto 0;
+    }
+
+    /* =========================
+       CONTAINER
+    ========================== */
 
     .container{
       width:95%;
@@ -82,10 +136,14 @@
       margin:25px auto;
     }
 
+    /* =========================
+       SELETOR
+    ========================== */
+
     .card-selecao{
       background:white;
-      border-radius:14px;
-      padding:20px;
+      border-radius:18px;
+      padding:22px;
       box-shadow:0 8px 24px rgba(138,191,255,0.20);
       border:1px solid var(--borda);
       margin-bottom:25px;
@@ -96,13 +154,14 @@
       margin-bottom:10px;
       font-weight:bold;
       color:var(--azul);
+      font-size:18px;
     }
 
     select,
     input{
       width:100%;
-      padding:12px;
-      border-radius:10px;
+      padding:13px;
+      border-radius:12px;
       border:1px solid #cbd5e1;
       outline:none;
       font-size:14px;
@@ -115,16 +174,20 @@
       box-shadow:0 0 0 3px rgba(0,58,251,0.10);
     }
 
+    /* =========================
+       FORMULARIOS
+    ========================== */
+
     .formularios{
       display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+      grid-template-columns:repeat(auto-fit,minmax(340px,1fr));
       gap:22px;
     }
 
     .formulario{
       display:none;
       background:white;
-      border-radius:16px;
+      border-radius:18px;
       overflow:hidden;
       box-shadow:0 8px 24px rgba(138,191,255,0.18);
       border:1px solid var(--borda);
@@ -135,7 +198,12 @@
     }
 
     .form-header{
-      background:linear-gradient(90deg,#8ABFFF20,#8ABFFF05);
+      background:linear-gradient(
+        90deg,
+        #8ABFFF25,
+        #8ABFFF08
+      );
+
       padding:18px;
       border-bottom:1px solid #edf3ff;
     }
@@ -185,6 +253,10 @@
       transform:translateY(-1px);
     }
 
+    /* =========================
+       MENSAGEM
+    ========================== */
+
     .mensagem{
       margin-top:20px;
       padding:14px;
@@ -206,6 +278,10 @@
       color:#991b1b;
     }
 
+    /* =========================
+       RODAPE
+    ========================== */
+
     footer{
       margin:40px 0 25px;
       text-align:center;
@@ -219,45 +295,57 @@
       font-weight:800;
     }
 
+    /* =========================
+       RESPONSIVO
+    ========================== */
+
     @media(max-width:768px){
 
-      .topo{
-        flex-direction:column;
-        padding:15px;
-      }
-
       .banner{
-        width:100%;
         border-radius:25px;
+        min-height:140px;
       }
 
-      .banner h1{
+      .banner-content h1{
         font-size:28px;
+      }
+
+      .banner-content p{
+        font-size:14px;
       }
 
       .duplo{
         grid-template-columns:1fr;
       }
+
     }
 
   </style>
+
 </head>
 
 <body>
 
-  <!-- TOPO -->
+  <!-- CABEÇALHO -->
 
   <div class="topo">
 
-    <img
-      class="logo"
-      src="https://i.imgur.com/2WZtOD6.png"
-      alt="Vida em Forma"
-    >
-
     <div class="banner">
-      <h1>Vida em Forma - Ahgora</h1>
-      <p>Formulários de lançamento para alimentação do dashboard</p>
+
+      <div class="banner-overlay"></div>
+
+      <div class="banner-content">
+
+        <h1>Vida em Forma - Ahgora</h1>
+
+        <p>
+          Formulários de lançamento para alimentação do dashboard
+        </p>
+
+        <div class="linha-banner"></div>
+
+      </div>
+
     </div>
 
   </div>
@@ -270,16 +358,36 @@
 
     <div class="card-selecao">
 
-      <label>Selecione o formulário que deseja preencher</label>
+      <label>
+        Selecione o formulário que deseja preencher
+      </label>
 
       <select id="tipoFormulario" onchange="mostrarFormulario()">
-        <option value="">Selecione uma opção</option>
 
-        <option value="cronograma">Tabela Cronograma</option>
-        <option value="ergonomia">Tabela Ergonomia</option>
-        <option value="ginastica">Tabela Ginástica Laboral</option>
-        <option value="queixa">Tabela Queixa</option>
-        <option value="quickmassage">Tabela Quick Massage</option>
+        <option value="">
+          Selecione uma opção
+        </option>
+
+        <option value="cronograma">
+          Tabela Cronograma
+        </option>
+
+        <option value="ergonomia">
+          Tabela Ergonomia
+        </option>
+
+        <option value="ginastica">
+          Tabela Ginástica Laboral
+        </option>
+
+        <option value="queixa">
+          Tabela Queixa
+        </option>
+
+        <option value="quickmassage">
+          Tabela Quick Massage
+        </option>
+
       </select>
 
     </div>
@@ -386,6 +494,7 @@
             </div>
 
             <div class="campo">
+
               <label>Setor</label>
 
               <select name="Setor" required>
