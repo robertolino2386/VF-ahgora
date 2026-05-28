@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vida em Forma - Ahgora | Relatórios</title>
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <style>
     :root{
       --azul:#003AFB;
@@ -96,34 +98,6 @@
       overflow:hidden;
     }
 
-    .cabecalho::before,
-    .cabecalho::after{
-      content:"";
-      position:absolute;
-      border-radius:50%;
-      border:2px solid rgba(138,191,255,0.22);
-    }
-
-    .cabecalho::before{
-      width:620px;
-      height:620px;
-      top:-480px;
-      left:-120px;
-    }
-
-    .cabecalho::after{
-      width:620px;
-      height:620px;
-      bottom:-500px;
-      right:-100px;
-    }
-
-    .cabecalho h2,
-    .cabecalho p{
-      position:relative;
-      z-index:2;
-    }
-
     .cabecalho h2{
       font-size:30px;
       margin-bottom:8px;
@@ -154,6 +128,13 @@
     .filtros{
       display:grid;
       grid-template-columns:1fr 1fr auto;
+      gap:16px;
+      align-items:end;
+    }
+
+    .filtro-dashboard{
+      display:grid;
+      grid-template-columns:1fr auto;
       gap:16px;
       align-items:end;
     }
@@ -225,10 +206,6 @@
       height:46px;
     }
 
-    .btn-limpar:hover{
-      background:#002fc7;
-    }
-
     table{
       width:100%;
       border-collapse:collapse;
@@ -265,16 +242,27 @@
       font-size:14px;
     }
 
-    .placeholder{
-      text-align:center;
-      padding:60px 20px;
-      color:#6b7280;
+    .grid-dashboard{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:22px;
     }
 
-    .placeholder h3{
+    .grafico-card h3{
       color:var(--azul);
-      font-size:26px;
-      margin-bottom:10px;
+      margin-bottom:8px;
+      font-size:21px;
+    }
+
+    .grafico-card p{
+      color:#6b7280;
+      margin-bottom:18px;
+      font-size:14px;
+    }
+
+    .grafico-area{
+      height:360px;
+      position:relative;
     }
 
     footer{
@@ -307,8 +295,13 @@
         padding:18px;
       }
 
-      .filtros{
+      .filtros,
+      .filtro-dashboard{
         grid-template-columns:1fr;
+      }
+
+      .grafico-area{
+        height:300px;
       }
     }
   </style>
@@ -361,7 +354,6 @@
 
       <div class="card">
         <div id="contadorCronograma" class="contador"></div>
-
         <table>
           <thead>
             <tr>
@@ -406,7 +398,6 @@
 
       <div class="card">
         <div id="contadorErgonomia" class="contador"></div>
-
         <table>
           <thead>
             <tr>
@@ -422,12 +413,49 @@
     <section id="dashboard" class="tela">
       <div class="cabecalho">
         <h2>Dashboard</h2>
-        <p>Área preparada para a próxima etapa dos indicadores e gráficos.</p>
+        <p>Indicadores gráficos de Quick Massage e Ginástica Laboral.</p>
       </div>
 
-      <div class="card placeholder">
-        <h3>Dashboard em construção</h3>
-        <p>Na próxima etapa vamos criar os gráficos e indicadores consolidados.</p>
+      <div class="card">
+        <div class="filtro-dashboard">
+          <div class="filtro-box">
+            <label>Ano</label>
+            <div class="multi-select">
+              <button class="multi-btn" onclick="abrirFiltro('anosDashboard')">Selecionar anos</button>
+              <div id="anosDashboard" class="multi-options"></div>
+            </div>
+          </div>
+
+          <button class="btn-limpar" onclick="limparFiltrosDashboard()">Limpar filtro</button>
+        </div>
+      </div>
+
+      <div class="grid-dashboard">
+
+        <div class="card grafico-card">
+          <h3>Quick Massage</h3>
+          <p>Percentual mensal de participação calculado por Participação / Total.</p>
+          <div class="grafico-area">
+            <canvas id="graficoQuickMassage"></canvas>
+          </div>
+        </div>
+
+        <div class="card grafico-card">
+          <h3>Ginástica Laboral - Adesão média mensal</h3>
+          <p>Adesão mensal calculada por soma de presentes / soma total.</p>
+          <div class="grafico-area">
+            <canvas id="graficoGinasticaMensal"></canvas>
+          </div>
+        </div>
+
+        <div class="card grafico-card">
+          <h3>Ginástica Laboral - Adesão média por setor</h3>
+          <p>Adesão por setor calculada por soma de presentes / soma total.</p>
+          <div class="grafico-area">
+            <canvas id="graficoGinasticaSetor"></canvas>
+          </div>
+        </div>
+
       </div>
     </section>
 
@@ -443,31 +471,22 @@
 
     let dadosCronograma = [];
     let dadosErgonomia = [];
+    let dadosGinastica = [];
+    let dadosQuickMassage = [];
+
+    let graficoQuickMassage;
+    let graficoGinasticaMensal;
+    let graficoGinasticaSetor;
 
     let filtros = {
-      Cronograma: {
-        anos: [],
-        meses: []
-      },
-      Ergonomia: {
-        anos: [],
-        meses: []
-      }
+      Cronograma: { anos: [], meses: [] },
+      Ergonomia: { anos: [], meses: [] },
+      Dashboard: { anos: [] }
     };
 
     const nomesMeses = [
-      "Janeiro",
-      "Fevereiro",
-      "Março",
-      "Abril",
-      "Maio",
-      "Junho",
-      "Julho",
-      "Agosto",
-      "Setembro",
-      "Outubro",
-      "Novembro",
-      "Dezembro"
+      "Janeiro","Fevereiro","Março","Abril","Maio","Junho",
+      "Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"
     ];
 
     carregarDados();
@@ -484,10 +503,15 @@
 
         dadosCronograma = prepararDatas(retorno.dados.Cronograma || []);
         dadosErgonomia = prepararDatas(retorno.dados.Ergonomia || []);
+        dadosGinastica = prepararDatas(retorno.dados.GinasticaLaboral || []);
+        dadosQuickMassage = prepararDatas(retorno.dados.QuickMassage || []);
 
         montarFiltros();
+        montarFiltroDashboard();
+
         renderizarCronograma();
         renderizarErgonomia();
+        renderizarDashboard();
 
       }catch(erro){
         alert("Erro ao conectar com o Apps Script.");
@@ -503,7 +527,7 @@
           _dataObj: data,
           _ano: data ? data.getFullYear() : "",
           _mes: data ? data.getMonth() + 1 : "",
-          _dataFormatada: data ? formatarData(data) : item.Data
+          _dataFormatada: data ? data.toLocaleDateString("pt-BR") : item.Data
         };
       });
     }
@@ -528,41 +552,41 @@
       return new Date(valor);
     }
 
-    function formatarData(data){
-      return data.toLocaleDateString("pt-BR");
+    function montarFiltros(){
+      criarOpcoesFiltro("Cronograma", dadosCronograma, "anosCronograma", "mesesCronograma");
+      criarOpcoesFiltro("Ergonomia", dadosErgonomia, "anosErgonomia", "mesesErgonomia");
     }
 
-    function montarFiltros(){
-      criarOpcoesFiltro(
-        "Cronograma",
-        dadosCronograma,
-        "anosCronograma",
-        "mesesCronograma"
-      );
+    function montarFiltroDashboard(){
+      const anos = [
+        ...new Set([
+          ...dadosGinastica.map(item => item._ano),
+          ...dadosQuickMassage.map(item => item._ano)
+        ].filter(Boolean))
+      ].sort();
 
-      criarOpcoesFiltro(
-        "Ergonomia",
-        dadosErgonomia,
-        "anosErgonomia",
-        "mesesErgonomia"
-      );
+      const divAnos = document.getElementById("anosDashboard");
+
+      divAnos.innerHTML = anos.map(ano => `
+        <label>
+          <input type="checkbox" value="${ano}" onchange="alterarFiltroDashboard(this)">
+          ${ano}
+        </label>
+      `).join("");
     }
 
     function criarOpcoesFiltro(tipo, dados, idAnos, idMeses){
       const anos = [...new Set(dados.map(item => item._ano).filter(Boolean))].sort();
       const meses = [...new Set(dados.map(item => item._mes).filter(Boolean))].sort((a,b) => a-b);
 
-      const divAnos = document.getElementById(idAnos);
-      const divMeses = document.getElementById(idMeses);
-
-      divAnos.innerHTML = anos.map(ano => `
+      document.getElementById(idAnos).innerHTML = anos.map(ano => `
         <label>
           <input type="checkbox" value="${ano}" onchange="alterarFiltro('${tipo}','anos',this)">
           ${ano}
         </label>
       `).join("");
 
-      divMeses.innerHTML = meses.map(mes => `
+      document.getElementById(idMeses).innerHTML = meses.map(mes => `
         <label>
           <input type="checkbox" value="${mes}" onchange="alterarFiltro('${tipo}','meses',this)">
           ${nomesMeses[mes - 1]}
@@ -586,32 +610,41 @@
       }
     }
 
+    function alterarFiltroDashboard(checkbox){
+      const valor = Number(checkbox.value);
+
+      if(checkbox.checked){
+        filtros.Dashboard.anos.push(valor);
+      }else{
+        filtros.Dashboard.anos = filtros.Dashboard.anos.filter(item => item !== valor);
+      }
+
+      renderizarDashboard();
+    }
+
     function filtrarDados(tipo, dados){
       return dados.filter(item => {
-        const filtroAno = filtros[tipo].anos;
-        const filtroMes = filtros[tipo].meses;
-
-        const passaAno = filtroAno.length === 0 || filtroAno.includes(item._ano);
-        const passaMes = filtroMes.length === 0 || filtroMes.includes(item._mes);
-
+        const passaAno = filtros[tipo].anos.length === 0 || filtros[tipo].anos.includes(item._ano);
+        const passaMes = filtros[tipo].meses.length === 0 || filtros[tipo].meses.includes(item._mes);
         return passaAno && passaMes;
+      });
+    }
+
+    function filtrarDashboard(dados){
+      return dados.filter(item => {
+        return filtros.Dashboard.anos.length === 0 || filtros.Dashboard.anos.includes(item._ano);
       });
     }
 
     function renderizarCronograma(){
       const tbody = document.getElementById("tabelaCronograma");
       const contador = document.getElementById("contadorCronograma");
-
       const dados = filtrarDados("Cronograma", dadosCronograma);
 
       contador.textContent = `${dados.length} registro(s) encontrado(s).`;
 
       if(dados.length === 0){
-        tbody.innerHTML = `
-          <tr>
-            <td colspan="4" class="vazio">Nenhum registro encontrado.</td>
-          </tr>
-        `;
+        tbody.innerHTML = `<tr><td colspan="4" class="vazio">Nenhum registro encontrado.</td></tr>`;
         return;
       }
 
@@ -628,17 +661,12 @@
     function renderizarErgonomia(){
       const tbody = document.getElementById("tabelaErgonomia");
       const contador = document.getElementById("contadorErgonomia");
-
       const dados = filtrarDados("Ergonomia", dadosErgonomia);
 
       contador.textContent = `${dados.length} registro(s) encontrado(s).`;
 
       if(dados.length === 0){
-        tbody.innerHTML = `
-          <tr>
-            <td colspan="2" class="vazio">Nenhum registro encontrado.</td>
-          </tr>
-        `;
+        tbody.innerHTML = `<tr><td colspan="2" class="vazio">Nenhum registro encontrado.</td></tr>`;
         return;
       }
 
@@ -650,18 +678,176 @@
       `).join("");
     }
 
-    function abrirTela(id, botao){
-      document.querySelectorAll(".tela").forEach(tela => {
-        tela.classList.remove("ativa");
+    function renderizarDashboard(){
+      renderizarGraficoQuickMassage();
+      renderizarGraficoGinasticaMensal();
+      renderizarGraficoGinasticaSetor();
+    }
+
+    function renderizarGraficoQuickMassage(){
+      const dados = filtrarDashboard(dadosQuickMassage);
+
+      const totaisMes = Array(12).fill(0);
+      const participacaoMes = Array(12).fill(0);
+
+      dados.forEach(item => {
+        const mes = item._mes - 1;
+        if(mes >= 0){
+          participacaoMes[mes] += numero(item.Participacao);
+          totaisMes[mes] += numero(item.Total);
+        }
       });
 
+      const percentuais = participacaoMes.map((valor, i) => {
+        return totaisMes[i] > 0 ? (valor / totaisMes[i]) * 100 : 0;
+      });
+
+      if(graficoQuickMassage){
+        graficoQuickMassage.destroy();
+      }
+
+      graficoQuickMassage = criarGraficoBarra(
+        "graficoQuickMassage",
+        nomesMeses,
+        percentuais,
+        "Participação %"
+      );
+    }
+
+    function renderizarGraficoGinasticaMensal(){
+      const dados = filtrarDashboard(dadosGinastica);
+
+      const totaisMes = Array(12).fill(0);
+      const presentesMes = Array(12).fill(0);
+
+      dados.forEach(item => {
+        const mes = item._mes - 1;
+        if(mes >= 0){
+          presentesMes[mes] += numero(item.Presente);
+          totaisMes[mes] += numero(item.Total);
+        }
+      });
+
+      const percentuais = presentesMes.map((valor, i) => {
+        return totaisMes[i] > 0 ? (valor / totaisMes[i]) * 100 : 0;
+      });
+
+      if(graficoGinasticaMensal){
+        graficoGinasticaMensal.destroy();
+      }
+
+      graficoGinasticaMensal = criarGraficoBarra(
+        "graficoGinasticaMensal",
+        nomesMeses,
+        percentuais,
+        "Adesão média %"
+      );
+    }
+
+    function renderizarGraficoGinasticaSetor(){
+      const dados = filtrarDashboard(dadosGinastica);
+      const setores = {};
+
+      dados.forEach(item => {
+        const setor = item.Setor || "Não informado";
+
+        if(!setores[setor]){
+          setores[setor] = {
+            presente: 0,
+            total: 0
+          };
+        }
+
+        setores[setor].presente += numero(item.Presente);
+        setores[setor].total += numero(item.Total);
+      });
+
+      const labels = Object.keys(setores).sort();
+
+      const valores = labels.map(setor => {
+        return setores[setor].total > 0
+          ? (setores[setor].presente / setores[setor].total) * 100
+          : 0;
+      });
+
+      if(graficoGinasticaSetor){
+        graficoGinasticaSetor.destroy();
+      }
+
+      graficoGinasticaSetor = criarGraficoBarra(
+        "graficoGinasticaSetor",
+        labels,
+        valores,
+        "Adesão por setor %"
+      );
+    }
+
+    function criarGraficoBarra(idCanvas, labels, valores, titulo){
+      const ctx = document.getElementById(idCanvas);
+
+      return new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: labels,
+          datasets: [{
+            label: titulo,
+            data: valores,
+            backgroundColor: "#003AFB",
+            borderColor: "#003AFB",
+            borderWidth: 1,
+            borderRadius: 8
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context){
+                  return context.raw.toFixed(2).replace(".", ",") + "%";
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 100,
+              ticks: {
+                callback: function(value){
+                  return value + "%";
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function numero(valor){
+      if(valor === null || valor === undefined || valor === "") return 0;
+
+      return Number(
+        String(valor)
+          .replace("%", "")
+          .replace(",", ".")
+      ) || 0;
+    }
+
+    function abrirTela(id, botao){
+      document.querySelectorAll(".tela").forEach(tela => tela.classList.remove("ativa"));
       document.getElementById(id).classList.add("ativa");
 
-      document.querySelectorAll(".menu button").forEach(btn => {
-        btn.classList.remove("ativo");
-      });
-
+      document.querySelectorAll(".menu button").forEach(btn => btn.classList.remove("ativo"));
       botao.classList.add("ativo");
+
+      if(id === "dashboard"){
+        setTimeout(renderizarDashboard, 200);
+      }
     }
 
     function abrirFiltro(id){
@@ -683,9 +869,7 @@
         : ["anosErgonomia", "mesesErgonomia"];
 
       ids.forEach(id => {
-        document.querySelectorAll(`#${id} input`).forEach(input => {
-          input.checked = false;
-        });
+        document.querySelectorAll(`#${id} input`).forEach(input => input.checked = false);
       });
 
       if(tipo === "Cronograma"){
@@ -693,6 +877,16 @@
       }else{
         renderizarErgonomia();
       }
+    }
+
+    function limparFiltrosDashboard(){
+      filtros.Dashboard.anos = [];
+
+      document.querySelectorAll("#anosDashboard input").forEach(input => {
+        input.checked = false;
+      });
+
+      renderizarDashboard();
     }
 
     document.addEventListener("click", function(event){
