@@ -669,7 +669,7 @@
 
         <div class="card grafico-card">
           <h3>Quick Massage</h3>
-          <p>Percentual mensal de participação.</p>
+          <p>Percentual mensal de participação calculado por Participação / Total.</p>
           <div class="grafico-area">
             <canvas id="graficoQuickMassage"></canvas>
           </div>
@@ -677,7 +677,7 @@
 
         <div class="card grafico-card">
           <h3>Ginástica Laboral - Adesão média mensal</h3>
-          <p>Adesão mensal.</p>
+          <p>Adesão mensal calculada por soma de presentes / soma total.</p>
           <div class="grafico-area">
             <canvas id="graficoGinasticaMensal"></canvas>
           </div>
@@ -685,7 +685,7 @@
 
         <div class="card grafico-card">
           <h3>Ginástica Laboral - Adesão média por setor</h3>
-          <p>Adesão por setor.</p>
+          <p>Adesão por setor calculada por soma de presentes / soma total.</p>
           <div class="grafico-area">
             <canvas id="graficoGinasticaSetor"></canvas>
           </div>
@@ -693,7 +693,7 @@
 
         <div class="card grafico-card">
           <h3>Desconforto</h3>
-          <p>Mapa corporal por segmento.</p>
+          <p>Mapa corporal por segmento, colorido conforme o percentual informado na tabela Queixa.</p>
 
           <div class="desconforto-layout">
             <div class="desconforto-filtro">
@@ -717,7 +717,7 @@
 
     <footer>
       Desenvolvido por:
-      <strong>Vida em Forma - Roberto Lino</strong>
+      <strong>Vida em Forma - RL</strong>
     </footer>
 
   </main>
@@ -782,11 +782,13 @@
             if (!valor || valor <= 0) return;
 
             ctx.save();
-            ctx.font = "bold 12px Arial";
+            ctx.font = "bold 11px Arial";
             ctx.fillStyle = "#111827";
-            ctx.textAlign = "center";
-            ctx.textBaseline = "bottom";
-            ctx.fillText(valor.toFixed(2).replace(".", ",") + "%", bar.x, bar.y - 6);
+            ctx.translate(bar.x + 8, bar.y - 6);
+            ctx.rotate(-Math.PI / 2);
+            ctx.textAlign = "left";
+            ctx.textBaseline = "middle";
+            ctx.fillText(valor.toFixed(2).replace(".", ",") + "%", 0, 0);
             ctx.restore();
           });
         });
@@ -1221,7 +1223,7 @@
             y: {
               display: false,
               beginAtZero: true,
-              max: 100,
+              max: 130,
               grid: { display: false, drawBorder: false },
               border: { display: false },
               ticks: { display: false }
@@ -1418,7 +1420,7 @@
               ${linhas || `<tr><td colspan="${colunas.length}">Nenhum registro encontrado.</td></tr>`}
             </tbody>
           </table>
-          <div class="rodape">Desenvolvido por: Vida em Forma - Roberto Lino</div>
+          <div class="rodape">Desenvolvido por: Vida em Forma - RL</div>
           <script>
             window.onload = function(){
               window.print();
